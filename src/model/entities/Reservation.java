@@ -1,16 +1,19 @@
 package model.entities;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
-public class Reservation {
-
+public class Reservation  {
     private LocalDate date;
     private int startHour;
     private int endHour;
     private String name;
     private String reason;
 
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+    
     public Reservation(LocalDate date, int startHour, int endHour, String name, String reason) {
         if(endHour<=startHour ){
             throw new IllegalArgumentException("End hour must be greater than start hour");
@@ -66,7 +69,7 @@ public class Reservation {
 
     @Override
     public String toString() {
-        return date + ";" + startHour + ";" + endHour + ";" + name + ";" + reason;
+        return date.format(DATE_FORMATTER) + ";" + startHour + ";" + endHour + ";" + name + ";" + reason;
     }
 
     @Override
@@ -105,6 +108,8 @@ public class Reservation {
         
         return new Reservation(date, startHour, endHour ,name, reason);
     }
+
+   
     
     
 }
