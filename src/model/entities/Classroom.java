@@ -72,4 +72,17 @@ public abstract class Classroom {
     public Classroom getClassroom(){
         return this;
     }
+
+    public static Classroom stringToClassroom(String content){
+        String[] values = content.split("\\;");
+        if(values.length!=4){
+            return null;
+        }
+        if(values[3].equals("Laboratorio")){
+            return new ClassroomLab(Integer.parseInt(values[0]),Integer.parseInt(values[1]),values[2]);
+        }else if(values[3].equals("Didattica")){
+            return new ClassroomDidactic(Integer.parseInt(values[0]),Integer.parseInt(values[1]),values[2]);
+        }
+        return null;
+    }
 }

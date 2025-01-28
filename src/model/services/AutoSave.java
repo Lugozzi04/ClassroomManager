@@ -1,18 +1,19 @@
 package model.services;
 
-public class AutoSave extends Thread {
+public class AutoSave<C extends Cache> extends Thread {
 
-    private final Writer writer;
+    private final WriterCache<C> writer;
     private final int intervalMinutes;
     private volatile boolean running;
 
-    public AutoSave(Writer writer, int intervalMinutes) {
+    public AutoSave(WriterCache<C> writer, int intervalMinutes) {
         this.writer = writer;
         this.intervalMinutes = intervalMinutes;
         this.running = true;
     }
 
     @Override
+    @SuppressWarnings("SleepWhileInLoop")
     public void run() {
         // Converti l'intervallo in minuti in millisecondi
         long intervalMillis = intervalMinutes * 60 * 1000;

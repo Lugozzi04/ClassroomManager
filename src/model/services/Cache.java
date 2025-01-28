@@ -1,6 +1,6 @@
 package model.services;
 
-public final class Cache {
+public class Cache {
 
     private final StringBuilder cache;
 
