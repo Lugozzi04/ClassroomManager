@@ -91,20 +91,15 @@ public class ManagerClassReservations <D,C extends Classroom> {
     }
 
     public boolean updateReservation(D key, int classroomNumber, Reservation oldReservation, Reservation newReservation) {
-        if (!reservations.containsKey(key) || !reservations.get(key).containsKey(classroomNumber)) {
+        if (!removeReservation(key, classroomNumber, oldReservation)) {
             return false;
         }
-    
-        List<Reservation> resList = reservations.get(key).get(classroomNumber);
-        if (!resList.remove(oldReservation)) {
+        if (!addReservation(key, classroomNumber, newReservation)) {
+            // Se la nuova prenotazione fallisce, ripristiniamo la vecchia
+            addReservation(key, classroomNumber, oldReservation);
             return false;
         }
-        
-        if (resList.isEmpty()) {
-            reservations.get(key).remove(classroomNumber);
-        }
-    
-        return addReservation(key, classroomNumber, newReservation);
+        return true;
     }
 
 }

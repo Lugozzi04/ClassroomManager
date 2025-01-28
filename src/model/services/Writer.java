@@ -6,41 +6,32 @@ import java.io.IOException;
 
 public class Writer {
     private final String fileName;
-    private Cache c;
+    private final Cache cache;
 
-    public Writer(String fileName, Cache c) {
+    public Writer(String fileName,Cache cache) {
         this.fileName = fileName;
-        this.c = c;
+        this.cache = cache;
     }
 
-    public void save(){
-        overWriteFile(c.getCache());
+    public boolean saveToFile() {
+        return overWriteFile();
     }
 
-    public void removeLine(int index){
-        c.removeLine(index);
-    }
-    public void addLine(String line){
-        c.addLine(line);
+    public void addLine(String line) {
+        cache.addLine(line);
     }
 
-    private boolean  overWriteFile(String content){
+    public boolean removeLine(int index) {
+        return cache.removeLine(index);
+    }
+
+    private boolean overWriteFile(){
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(fileName))) {
-            bw.write(content);
+            bw.write(cache.getCache());
             return true;
         } catch (IOException e) {
             return false;
         }
     }
-
-
-    //get set
-    public Cache getCache(){
-        return c;
-    }
-    public void setCache(Cache c){
-        this.c=c;
-    }
-
 
 }

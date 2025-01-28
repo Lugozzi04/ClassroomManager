@@ -1,28 +1,15 @@
 package model.services;
 
-import java.io.*;
-
 public final class Cache {
-    private final String fileName;
+
     private final StringBuilder cache;
 
-    public Cache(String fileName) {
-        this.fileName = fileName;
+    public Cache() {
         this.cache = new StringBuilder();
     }
 
-    public boolean loadFromFile() {
-        cache.setLength(0); // Svuota la cache prima di ricaricare
-
-        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                cache.append(line).append("\n");
-            }
-        } catch (IOException e) {
-            return false;
-        }
-        return true;
+    public Cache(String cache) {
+        this.cache = new StringBuilder(cache);
     }
 
     public String getCache() {
@@ -46,7 +33,7 @@ public final class Cache {
         if (n < 0 || n >= righe.length) {
             return false;
         }
-        cache.setLength(0);
+        cache.setLength(0); // Resetta il contenuto della cache
 
         for (int i = 0; i < righe.length; i++) {
             if (i != n) {
