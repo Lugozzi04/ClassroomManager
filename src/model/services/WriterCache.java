@@ -4,11 +4,11 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class WriterCache <C extends Cache> {
+public class WriterCache {
     private final String fileName;
-    private final C cache;
+    private final Cache cache;
 
-    public WriterCache(String fileName,C cache) {
+    public WriterCache(String fileName,Cache cache) {
         this.fileName = fileName;
         this.cache = cache;
     }

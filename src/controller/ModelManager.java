@@ -4,46 +4,47 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import model.entities.*;
-import model.services.Cache;
-import model.services.ChacheLoader;
-import model.services.WriterCache;
+import model.services.*;
 import model.struct.*;
 
-public class ModelManager<D,C extends Classroom> {
+public class ModelManager {
     
-    private ManagerClassReservations<LocalDate,Classroom> manager;
-    private Cache cacheReservation;
-    private WriterCache<Cache> writerReservation;
+    private final ManagerClassReservations<LocalDate,Classroom> manager;
+    private final Cache cacheReservation;
+    private final WriterCache writerReservation;
     
-
-
 
     public ModelManager(String fileName) {
         this.manager = new ManagerClassReservations<>(getListClassroom());
-        this.cacheReservation = new Cache();
-        ChacheLoader<Cache> loader = new ChacheLoader<>(fileName, cacheReservation);
-        loader.loadToCache();
-        writerReservation = new WriterCache<>(fileName, cacheReservation);
+        ChacheLoader loader = new ChacheLoader(fileName);
+        cacheReservation=loader.loadCache();
+        writerReservation = new WriterCache(fileName, cacheReservation);
+        initReservation();
     }
     
-    public boolean addReservation(Reservation r) {
-        // TODO implement here
-        return false;
+    public boolean addReservation(Reservation r, int classroomNumber) {
+        return manager.addReservation(r.getDate(), classroomNumber, r)&&
+                cacheReservation.addLine(classroomNumber + "{" + r.toString());
     }
 
-    public boolean removeReservation(Reservation r) {
-        // TODO implement here
-        return false;
+    public boolean removeReservation(Reservation r, int classroomNumber) { 
+        return manager.removeReservation(r.getDate(), classroomNumber, r)&&
+                cacheReservation.removeLine(cacheReservation.getCache().indexOf(classroomNumber + "{" + r.toString()));
     }
 
-    public boolean updateReservation(Reservation r) {
-        // TODO implement here
-        return false;
+    public boolean updateReservation(Reservation oldR,Reservation newR,int classroomNumber) {
+        return manager.updateReservation(oldR.getDate(), classroomNumber, oldR, newR)&&
+                cacheReservation.removeLine(cacheReservation.getCache().indexOf(classroomNumber + "{" + oldR.toString()))&&
+                cacheReservation.addLine(classroomNumber + "{" + newR.toString());
     }
 
     public boolean save(){
-        // TODO implement here
-        return false;
+        return writerReservation.saveToFile();
+    }
+
+    public void autoSave(int intervalMinutes){
+        AutoSave threadSave=new AutoSave(writerReservation, intervalMinutes);
+        threadSave.start();
     }
 
     public Reservation getReservation(LocalDate date, int id) {
@@ -58,10 +59,8 @@ public class ModelManager<D,C extends Classroom> {
 
     private List<Classroom> getListClassroom(){
         List<Classroom> classes = new ArrayList<>();
-        Cache cacheClass = new Cache();
-        ChacheLoader<Cache> loader = new ChacheLoader<>("file.txt", cacheClass);
-        loader.loadToCache();
-        WriterCache<Cache> writer = new WriterCache<>("file.txt", cacheClass);
+        ChacheLoader loader = new ChacheLoader("Classrooms.txt");
+        Cache cacheClass = loader.loadCache();
 
         for (int i = 0; i < cacheClass.getSize(); i++) {
             String line = cacheClass.getLine(i);      
@@ -71,14 +70,8 @@ public class ModelManager<D,C extends Classroom> {
     }
 
     private void initReservation(){
-        Cache cacheRes = new Cache();
-        ChacheLoader<Cache> loader = new ChacheLoader<>("file.txt", cacheRes);
-        loader.loadToCache();
-        WriterCache<Cache> writer = new WriterCache<>("file.txt", cacheRes);
-        ManagerClassReservations<LocalDate, Classroom> manager = new ManagerClassReservations<>(getListClassroom());
-
-        for (int i = 0; i < cacheRes.getSize(); i++) {
-            String line = cacheRes.getLine(i);      
+        for (int i = 0; i < cacheReservation.getSize(); i++) {
+            String line = cacheReservation.getLine(i);      
             String[] parts = line.split("\\{");
             Reservation r = Reservation.stringToReservation(parts[1]);
             manager.addReservation(r.getDate(),Integer.parseInt(parts[0]),r);

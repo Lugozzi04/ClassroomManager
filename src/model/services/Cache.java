@@ -16,8 +16,9 @@ public class Cache {
         return cache.toString();
     }
 
-    public void addLine(String line) {
+    public boolean addLine(String line) {
         cache.append(line).append("\n");
+        return true;
     }
 
     public String getLine(int n) {

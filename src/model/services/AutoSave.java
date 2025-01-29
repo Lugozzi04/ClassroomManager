@@ -1,12 +1,12 @@
 package model.services;
 
-public class AutoSave<C extends Cache> extends Thread {
+public class AutoSave extends Thread {
 
-    private final WriterCache<C> writer;
+    private final WriterCache writer;
     private final int intervalMinutes;
     private volatile boolean running;
 
-    public AutoSave(WriterCache<C> writer, int intervalMinutes) {
+    public AutoSave(WriterCache writer, int intervalMinutes) {
         this.writer = writer;
         this.intervalMinutes = intervalMinutes;
         this.running = true;
