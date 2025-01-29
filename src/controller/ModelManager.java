@@ -21,7 +21,7 @@ public class ModelManager {
         writerReservation = new WriterCache(fileName, cacheReservation);
         initReservation();
     }
-    
+    //BRUTTO VEDERE classroomNumber + "{" + r.toString(), dovrebbe esserci una variabile FORMAT
     public boolean addReservation(Reservation r, int classroomNumber) {
         return manager.addReservation(r.getDate(), classroomNumber, r)&&
                 cacheReservation.addLine(classroomNumber + "{" + r.toString());
@@ -47,14 +47,12 @@ public class ModelManager {
         threadSave.start();
     }
 
-    public Reservation getReservation(LocalDate date, int id) {
-        // TODO implement here
-        return null;
+    public Reservation getReservation(LocalDate date, int classroomNumber, int hour) {
+        return manager.getReservation(date, classroomNumber, hour);
     }
 
-    public Classroom getClassroom(int id) {
-        // TODO implement here
-        return null;
+    public Classroom getClassroom(int classNumber) {
+        return manager.getClassroom(classNumber);
     }
 
     private List<Classroom> getListClassroom(){

@@ -109,6 +109,14 @@ public class Reservation  {
         return new Reservation(date, startHour, endHour ,name, reason);
     }
 
+    public int[] getHours(){
+        int[] hours = new int[endHour-startHour];
+        for(int i=startHour;i<endHour;i++){
+            hours[i-startHour]=i;
+        }
+        return hours;
+    }
+
    
     
 }

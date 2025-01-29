@@ -25,11 +25,6 @@ public class ManagerClassReservations <D,C extends Classroom> {
         return map;
     }
 
-    /*private void addClassroom(C classroom) {
-        classrooms.put(classroom.getNumber(), classroom);
-    }*/
-
-
     public int getClassroomNumber(C Classroom){
         for (Map.Entry<Integer, C> entry : classrooms.entrySet()) {
             if (entry.getValue().equals(Classroom)) {
@@ -42,6 +37,25 @@ public class ManagerClassReservations <D,C extends Classroom> {
 
     private boolean isClassroom(int classroomNumber) {
         return classrooms.containsKey(classroomNumber);
+    }
+
+    public Classroom getClassroom(int classroomNumber) {
+        return classrooms.get(classroomNumber);
+    }
+    
+    public Reservation getReservation(D key, int classroomNumber, int hourToCheck) {
+        if (!reservations.containsKey(key) || !reservations.get(key).containsKey(classroomNumber)) {
+            return null;
+        }
+        for (Reservation r : reservations.get(key).get(classroomNumber)) {
+
+            for(int hour : r.getHours()){
+                if (hourToCheck == hour) {
+                    return r;
+                }
+            }
+        }
+        return null;
     }
 
 
