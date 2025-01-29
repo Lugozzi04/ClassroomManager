@@ -25,9 +25,9 @@ public class ManagerClassReservations <D,C extends Classroom> {
         return map;
     }
 
-    public int getClassroomNumber(C Classroom){
+    public int getClassroomNumber(C classroom){
         for (Map.Entry<Integer, C> entry : classrooms.entrySet()) {
-            if (entry.getValue().equals(Classroom)) {
+            if (entry.getValue().equals(classroom)) {
                 // Trova la Classroom corrispondente 
                 return entry.getKey(); // la chiave associata
             }

@@ -97,7 +97,7 @@ public class Reservation  {
     }
 
     public static Reservation stringToReservation(String content) {
-        String[] p = content.split(",");
+        String[] p = content.split(";");
         String[] onlyDate = p[0].split("-");
         
         LocalDate date = LocalDate.of(Integer.parseInt(onlyDate[0]), Integer.parseInt(onlyDate[1]), Integer.parseInt(onlyDate[2]));

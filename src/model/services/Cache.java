@@ -47,4 +47,14 @@ public class Cache {
     public int getSize() {
         return cache.toString().split("\n").length;
     }
+
+    public int getLineIndex(String searchString) {
+        String[] righe = cache.toString().split("\n");
+        for (int i = 0; i < righe.length; i++) {
+            if (righe[i].equals(searchString)) {
+                return i;
+            }
+        }
+        return -1; 
+    }
 }

@@ -44,7 +44,12 @@ public class AutoSave extends Thread {
     // Metodo per fermare il ciclo
     public void stopAutoSave() {
         running = false;  // Imposta la variabile running su false
-        this.interrupt(); // Interrompi il thread se è in sleep
+        this.interrupt();
+        try {
+            this.join(); // Aspetta la chiusura del thread
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
     }
 
     // Metodo per riattivare il ciclo

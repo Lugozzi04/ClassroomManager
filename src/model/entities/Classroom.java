@@ -9,7 +9,7 @@ public abstract class Classroom {
     private String info;
 
     public Classroom(int number, int capacity, String info,String type) {
-        if(capacity<0&&number<0){
+        if(capacity<0||number<0){
             throw new IllegalArgumentException("La capienza non può essere negativa");
         }
         this.number = number;
@@ -67,10 +67,6 @@ public abstract class Classroom {
     @Override
     public String toString(){
         return "Aula:"+number+" "+type;
-    }
-
-    public Classroom getClassroom(){
-        return this;
     }
 
     public static Classroom stringToClassroom(String content){

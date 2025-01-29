@@ -1,4 +1,4 @@
-package controller;
+package control;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -12,30 +12,40 @@ public class ModelManager {
     private final ManagerClassReservations<LocalDate,Classroom> manager;
     private final Cache cacheReservation;
     private final WriterCache writerReservation;
+    private AutoSave autoSaveThread;
+    private final List<Classroom> classrooms;
+
+    private static final String FORMAT = "%d{%s";
     
 
     public ModelManager(String fileName) {
-        this.manager = new ManagerClassReservations<>(getListClassroom());
-        ChacheLoader loader = new ChacheLoader(fileName);
+        this.classrooms = getListClassroom();
+        this.manager = new ManagerClassReservations<>(classrooms);
+        CacheLoader loader = new CacheLoader(fileName);
         cacheReservation=loader.loadCache();
         writerReservation = new WriterCache(fileName, cacheReservation);
         initReservation();
     }
-    //BRUTTO VEDERE classroomNumber + "{" + r.toString(), dovrebbe esserci una variabile FORMAT
+
     public boolean addReservation(Reservation r, int classroomNumber) {
         return manager.addReservation(r.getDate(), classroomNumber, r)&&
-                cacheReservation.addLine(classroomNumber + "{" + r.toString());
+                cacheReservation.addLine(String.format(FORMAT, classroomNumber, r.toString()));
     }
 
     public boolean removeReservation(Reservation r, int classroomNumber) { 
-        return manager.removeReservation(r.getDate(), classroomNumber, r)&&
-                cacheReservation.removeLine(cacheReservation.getCache().indexOf(classroomNumber + "{" + r.toString()));
+        String formattedReservation = String.format(FORMAT, classroomNumber, r.toString());
+        int index = cacheReservation.getLineIndex(formattedReservation);
+        return manager.removeReservation(r.getDate(), classroomNumber, r) && cacheReservation.removeLine(index);
     }
 
-    public boolean updateReservation(Reservation oldR,Reservation newR,int classroomNumber) {
-        return manager.updateReservation(oldR.getDate(), classroomNumber, oldR, newR)&&
-                cacheReservation.removeLine(cacheReservation.getCache().indexOf(classroomNumber + "{" + oldR.toString()))&&
-                cacheReservation.addLine(classroomNumber + "{" + newR.toString());
+    public boolean updateReservation(Reservation oldR, Reservation newR, int classroomNumber) {
+        String formattedOld = String.format(FORMAT, classroomNumber, oldR.toString());
+        String formattedNew = String.format(FORMAT, classroomNumber, newR.toString());
+        
+        int index = cacheReservation.getLineIndex(formattedOld);
+        return manager.updateReservation(oldR.getDate(), classroomNumber, oldR, newR) &&
+               cacheReservation.removeLine(index) &&
+               cacheReservation.addLine(formattedNew);
     }
 
     public boolean save(){
@@ -43,8 +53,11 @@ public class ModelManager {
     }
 
     public void autoSave(int intervalMinutes){
-        AutoSave threadSave=new AutoSave(writerReservation, intervalMinutes);
-        threadSave.start();
+        if (autoSaveThread != null) {
+            autoSaveThread.stopAutoSave(); // Ferma il vecchio thread
+        }
+        autoSaveThread = new AutoSave(writerReservation, intervalMinutes);
+        autoSaveThread.start();
     }
 
     public Reservation getReservation(LocalDate date, int classroomNumber, int hour) {
@@ -57,7 +70,7 @@ public class ModelManager {
 
     private List<Classroom> getListClassroom(){
         List<Classroom> classes = new ArrayList<>();
-        ChacheLoader loader = new ChacheLoader("Classrooms.txt");
+        CacheLoader loader = new CacheLoader("Classrooms.txt");
         Cache cacheClass = loader.loadCache();
 
         for (int i = 0; i < cacheClass.getSize(); i++) {
@@ -77,4 +90,7 @@ public class ModelManager {
         
     }
 
+    public List<Classroom> getClassrooms() {
+        return classrooms;
+    }
 }

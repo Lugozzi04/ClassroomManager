@@ -4,10 +4,10 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
-public final class ChacheLoader {
+public final class CacheLoader {
     private final String fileName;
 
-    public ChacheLoader(String fileName) {
+    public CacheLoader(String fileName) {
         this.fileName = fileName;
     }
 
