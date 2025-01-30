@@ -4,16 +4,16 @@ import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
-public class JPaneFileChooser extends JOptionPane{
+public class FileChooser extends JOptionPane{
 
     private String fileName;
 
-    public JPaneFileChooser(String Default) {
+    public FileChooser(String Default) {
         super();
         fileName = Default;
     }
 
-    public JPaneFileChooser() {
+    public FileChooser() {
         super();
         fileName = "";
     }

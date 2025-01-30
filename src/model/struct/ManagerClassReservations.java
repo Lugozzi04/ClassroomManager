@@ -16,6 +16,16 @@ public class ManagerClassReservations <D,C extends Classroom> {
         this.reservations = new HashMap<>();
         this.classrooms = initClassrooms(classrooms);
     }
+    //TODO: Serve?
+    public List<C> getClassrooms(D key) {
+        List<C> list = new ArrayList<>();
+        if (reservations.containsKey(key)) {
+            for (Map.Entry<Integer, List<Reservation>> entry : reservations.get(key).entrySet()) {
+                list.add(classrooms.get(entry.getKey()));
+            }
+        }
+        return list;
+    }
 
     private Map<Integer, C> initClassrooms(List<C> classrooms) {
         Map<Integer, C> map = new HashMap<>();

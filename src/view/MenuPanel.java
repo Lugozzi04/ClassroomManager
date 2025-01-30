@@ -1,41 +1,48 @@
 package view;
 
-import java.awt.GridLayout;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
 public class MenuPanel extends JPanel {
 
-    private JButton tabellaButton;
-    private JButton modificaButton;
-    private JButton aggiungiButton;
+    private final JButton printButton;
+    private final JButton saveButton;
+    private final JButton addButton;
 
     public MenuPanel() {
         // Imposta il layout del pannello
-        this.setLayout(new GridLayout(1, 3));
+        this.setLayout(new FlowLayout(FlowLayout.LEFT));
+
+        // Crea i bottoni con dimensioni fisse
+        Dimension buttonSize = new Dimension(120, 50);
 
         // Crea i bottoni
-        tabellaButton = new JButton("Tabella");
-        modificaButton = new JButton("Modifica");
-        aggiungiButton = new JButton("Aggiungi");
+        printButton = new JButton("Stampa");
+        printButton.setPreferredSize(buttonSize);
+        saveButton = new JButton("Salva");
+        saveButton.setPreferredSize(buttonSize);
+        addButton = new JButton("Aggiungi");
+        addButton.setPreferredSize(buttonSize);
 
         // Aggiungi i bottoni al pannello
-        this.add(tabellaButton);
-        this.add(modificaButton);
-        this.add(aggiungiButton);
+        this.add(printButton);
+        this.add(saveButton);
+        this.add(addButton);
         
     }
 
-    public void setTabellaButtonListener(ActionListener listener) {
-        tabellaButton.addActionListener(listener);
+    public void setTableButtonListener(ActionListener listener) {
+        printButton.addActionListener(listener);
     }
 
-    public void setModificaButtonListener(ActionListener listener) {
-        modificaButton.addActionListener(listener);
+    public void setSaveButtonListener(ActionListener listener) {
+        saveButton.addActionListener(listener);
     }
 
-    public void setAggiungiButtonListener(ActionListener listener) {
-        aggiungiButton.addActionListener(listener);
+    public void setAddButtonListener(ActionListener listener) {
+        addButton.addActionListener(listener);
     }
 }

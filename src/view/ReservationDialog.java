@@ -1,11 +1,8 @@
 package view;
 
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -14,25 +11,29 @@ import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+import model.entities.Reservation;
 
 import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
 
+import model.entities.Classroom;
 
-public final class JDialogReservation<C> extends JDialog implements ActionListener {
+public final class ReservationDialog extends JDialog {
     
-    JComboBox<C> classroomsComboBox;
+    private final JComboBox<Classroom> classroomsComboBox;
+    private final JComboBox<String> startHourComboBox;
+    private final JComboBox<String> endHourComboBox;
+
     private JDatePickerImpl datePicker;
-    private JComboBox<String> startHourComboBox;
-    private JComboBox<String> endHourComboBox;
     private JTextField nameField;
     private JTextField descriptionField;
+    private JButton submitButton;
 
-    public JDialogReservation(List<C> classrooms) {
+    public ReservationDialog(List<Classroom> classrooms) {
         super();
         classroomsComboBox = new JComboBox<>();
-        for(C classroom : classrooms) {
+        for(Classroom classroom : classrooms) {
             this.classroomsComboBox.addItem(classroom);
         }
 
@@ -40,22 +41,21 @@ public final class JDialogReservation<C> extends JDialog implements ActionListen
         startHourComboBox= new JComboBox<>(ore);
         endHourComboBox = new JComboBox<>(ore);
 
-        init();
+        init(true);
     }
 
-    public JDialogReservation(C classrooms,int startHour, int endHour) {
+    public ReservationDialog(Classroom classrooms,int startHour, int endHour) {
         super();
         classroomsComboBox = new JComboBox<>();
         this.classroomsComboBox.addItem(classrooms);
         startHourComboBox = new JComboBox<>(new String[]{startHour + ":00"});
         endHourComboBox = new JComboBox<>(new String[]{endHour + ":00"});
-        classroomsComboBox.setEnabled(false);
-        startHourComboBox.setEnabled(false);
-        endHourComboBox.setEnabled(false);
-        init();
+
+        init(false);
+        
     }
 
-    public void init(){
+    public void init(boolean isEditable){
         setLayout(new GridLayout(7, 2));
 
         // Configurazione del date picker
@@ -68,15 +68,21 @@ public final class JDialogReservation<C> extends JDialog implements ActionListen
         p.put("text.month", "Month");
         p.put("text.year", "Year");
         JDatePanelImpl datePanel = new JDatePanelImpl(model, p);
-        datePicker = new JDatePickerImpl(datePanel, null);
+        datePicker = new JDatePickerImpl(datePanel,null);
 
+
+        datePicker.setEnabled(isEditable);
+        classroomsComboBox.setEnabled(isEditable);
+        startHourComboBox.setEnabled(isEditable);
+        endHourComboBox.setEnabled(isEditable);
         // Configurazione delle combo box per l'ora
 
         nameField = new JTextField();
         descriptionField = new JTextField();
-        JButton submitButton = new JButton("Aggiungi Prenotazione");
-
-        submitButton.addActionListener(this);
+        if(isEditable)
+            submitButton = new JButton("Aggiungi Prenotazione");
+        else //TODO: verifica che il bottone Modifica Prenotazione funziona
+            submitButton = new JButton("Modifica Prenotazione");
 
         // Aggiunta dei componenti al pannello
         add(new JLabel("Aula:"));
@@ -99,28 +105,22 @@ public final class JDialogReservation<C> extends JDialog implements ActionListen
         setVisible(true);
     }
 
+    public void addActionListener(ActionListener listener){
+        submitButton.addActionListener(listener);
+    }
 
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-
-        /*if(e.getActionCommand().equals("Aggiungi Prenotazione")) {
-            C aula = (C) classroomsComboBox.getSelectedItem();
-            java.util.Date selectedDate = (java.util.Date) datePicker.getModel().getValue();
-            String dataString = formatDate(selectedDate);
-            LocalDate data = LocalDate.parse(dataString, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-            int oraInizio = Integer.parseInt(oraInizioComboBox.getSelectedItem().toString().split(":")[0]);
-            int oraFine = Integer.parseInt(oraFineComboBox.getSelectedItem().toString().split(":")[0]);
-            String nome = nomeField.getText();
-            String descrizione = descrizioneField.getText();
-
-            // Creazione di un oggetto prenotazione
-            // Prenotazione prenotazione = new Prenotazione(classroom, date, startHour, endHour, name, description);
-            // Aggiunta della prenotazione al database
-            // Database.getInstance().addPrenotazione(prenotazione);
-            // Chiudi la finestra
-            dispose();
-        }*/
+    public Reservation getSelectedReservation(){
+        LocalDate date = LocalDate.of(datePicker.getModel().getYear(), datePicker.getModel().getMonth() + 1, datePicker.getModel().getDay());
+        String startHourString = ((String) startHourComboBox.getSelectedItem()).split(":")[0];
+        String endHourString = ((String) endHourComboBox.getSelectedItem()).split(":")[0];
+        int startHour = Integer.parseInt(startHourString);
+        int endHour = Integer.parseInt(endHourString);
+        String name = nameField.getText();
+        String description = descriptionField.getText();
+        return new Reservation(date, startHour, endHour, name, description);
+    }
+    public int getSelectedClassNumber(){
+        return ((Classroom) classroomsComboBox.getSelectedItem()).getNumber();
     }
 
 

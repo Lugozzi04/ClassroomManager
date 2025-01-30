@@ -1,27 +1,36 @@
 package view;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import model.entities.Classroom;
 import model.entities.Reservation;
 
-public class JpaneShow extends JOptionPane {
+public class ShowDialog extends JDialog {
 
-    public JpaneShow(Classroom classroom) {
+    private JButton editButton;
+    private JButton removeButton;
+
+    public ShowDialog(Classroom classroom) {
         super();
+        setTitle("Classroom Details");
+        
         JPanel panel = new JPanel(new GridLayout(0, 1));
+        panel.add(new JLabel("Disponibile per la prenotazione"));
         panel.add(new JLabel("Classroom Details"));
         panel.add(new JLabel("Numero: " + classroom.getNumber()));
         panel.add(new JLabel("Tipo: " + classroom.getType()));
         panel.add(new JLabel("Capacita: " + classroom.getCapacity()));
         panel.add(new JLabel("Info: " + classroom.getInfo()));
         
-        showMessageDialog(null, panel, "Classroom Details", JOptionPane.INFORMATION_MESSAGE);
-    }
+        add(panel, BorderLayout.CENTER);
+        setSize(300, 200); 
+        setLocationRelativeTo(null);
+        }
     
-    public JpaneShow(Reservation reservation) {
+    public ShowDialog(Reservation reservation) {
         super();
         JPanel panel = new JPanel(new GridLayout(0, 1));
         panel.add(new JLabel("Reservation Details"));
@@ -31,14 +40,20 @@ public class JpaneShow extends JOptionPane {
         panel.add(new JLabel("Nome: " + reservation.getName()));
         panel.add(new JLabel("Description: " + reservation.getReason()));
 
-        JButton editButton = new JButton("Edit");
-        editButton.addActionListener(e -> {
-            // Implement the edit functionality here
-            JOptionPane.showMessageDialog(null, "Edit button clicked");
-        });
+        this.editButton = new JButton("Edit");
+        this.removeButton = new JButton("Remove");
         panel.add(editButton);
+        panel.add(removeButton);
+        add(panel, BorderLayout.CENTER);
+        setSize(300, 250); // Imposta la dimensione della finestra
+        setLocationRelativeTo(null);
+        }
 
-        showMessageDialog(null, panel, "Reservation Details", JOptionPane.INFORMATION_MESSAGE);
+    public void addShowListeners(ActionListener listener) {
+        System.err.println("Adding listener to Buttons");
+        editButton.addActionListener(listener);
+        removeButton.addActionListener(listener);
     }
+
 }
 

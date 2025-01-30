@@ -1,55 +1,54 @@
 package view;
 
-import java.awt.event.ActionEvent;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+public class MainFrame extends JFrame {
 
-public class MainFrame extends JFrame implements ActionListener{
+    private final TablePanel tablePanel;
+    private final MenuPanel menuPanel;
 
-    //private static final long serialVersionUID = 1L;
-    private JPanel panel;
-    private JPanel panel2;
-    private JPanel panel3;
-
-    public MainFrame() {
+    public MainFrame(TablePanel tp) {
         super("Gestore di Prenotazioni");
-        this.setSize(1000, 800);
+        this.setSize(1000, 600);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setVisible(true);
         this.setLocationRelativeTo(null);
+        this.setLayout(new BorderLayout());
 
-        MenuPanel menu =new MenuPanel();
+        this.menuPanel = new MenuPanel();
+        this.tablePanel = tp;
 
-        menu.setTabellaButtonListener(this);
-        
+        addMenuPanel();
+        addTablePanel();
+
+        this.setVisible(true);
     }
 
-    public void switchPanel(JPanel panel){
-        this.removeAll();
-        this.add(panel);
-        this.revalidate();
-        this.repaint();
+    private void addTablePanel() {
+        this.add(tablePanel, BorderLayout.CENTER);
     }
 
-    public void menuPanel(){
-
-    }
-    
-
-    public void panel2(){
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'panel2'");
+    private void addMenuPanel() {
+        JPanel southPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        southPanel.add(menuPanel);
+        this.add(southPanel, BorderLayout.SOUTH);
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'actionPerformed'");
+    public void setActionListener(ActionListener listener) {
+        menuPanel.setTableButtonListener(listener);
+        menuPanel.setSaveButtonListener(listener);
+        menuPanel.setAddButtonListener(listener);
+        //tablePanel.setDateChangeListener(listener);
     }
 
-    
-    
-    
+    public void updateTable() {
+        tablePanel.updateTable();
+    }
 
+    public void showMessage(String message) {
+        JOptionPane.showMessageDialog(this, message);
+    }
 }
