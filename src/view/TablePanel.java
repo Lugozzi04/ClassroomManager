@@ -14,6 +14,10 @@ import model.entities.Reservation;
 import control.ModelManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.print.PageFormat;
+import java.awt.print.Printable;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
 
 
 public class TablePanel extends JPanel implements ActionListener {
@@ -24,14 +28,14 @@ public class TablePanel extends JPanel implements ActionListener {
     private UtilDateModel model;
     private TableMouseListener listenerMouse;
 
-    private final int[][] classNumber;
 
 
 
     public TablePanel(ModelManager modelManager) {
         this.modelManager = modelManager;
         this.classrooms = modelManager.getClassrooms();
-        this.classNumber = new int[10][(classrooms.size())+1];
+
+
         setLayout(new BorderLayout());
 
         configureDatePicker();
@@ -39,7 +43,6 @@ public class TablePanel extends JPanel implements ActionListener {
 
         add(datePicker, BorderLayout.NORTH);
         add(new JScrollPane(table), BorderLayout.CENTER);
-
         updateTable();
     }
 
@@ -57,7 +60,9 @@ public class TablePanel extends JPanel implements ActionListener {
         datePickerButton.setText("Scegli Data");
         datePickerButton.revalidate();
         datePickerButton.repaint();
-
+        JButton printButton = new JButton("Stampa");
+        printButton.addActionListener(this);
+        add(printButton, BorderLayout.SOUTH);
         datePicker.addActionListener(this);
     }
 
@@ -95,10 +100,8 @@ public class TablePanel extends JPanel implements ActionListener {
                 }else{
                     data[row][col + 1] = "";
                 }
-                classNumber[row][col+1] = classrooms.get(col).getNumber();
             }
         }
-        listenerMouse.setClassNumber(classNumber);
         table.setModel(new DefaultTableModel(data, columnNames));
     }
 
@@ -108,7 +111,43 @@ public class TablePanel extends JPanel implements ActionListener {
         System.out.println(ae.getActionCommand());
         if(ae.getActionCommand().equals("Date selected")) 
             updateTable();
+        if(ae.getActionCommand().equals("Stampa")) 
+            printTable();
         
+    }
+
+    private void printTable() {
+        PrinterJob job = PrinterJob.getPrinterJob();
+        job.setJobName("Print Table");
+
+        job.setPrintable(new Printable() {
+            @Override
+            public int print(Graphics pg, PageFormat pf, int pageNum) {
+                if (pageNum > 0) {
+                    return Printable.NO_SUCH_PAGE;
+                }
+
+                Graphics2D g2 = (Graphics2D) pg;
+                g2.translate(pf.getImageableX(), pf.getImageableY());
+                g2.scale(0.75, 0.75); // Adjust the scale as needed
+
+                table.print(g2);
+
+                return Printable.PAGE_EXISTS;
+            }
+        });
+
+        boolean doPrint = job.printDialog();
+        if (doPrint) {
+            try {
+                job.print();
+            } catch (PrinterException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Errore durante la stampa: " + e.getMessage(), "Errore di Stampa", JOptionPane.ERROR_MESSAGE);
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Nessuna stampante disponibile.", "Errore di Stampa", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private static class CustomTableCellRenderer extends DefaultTableCellRenderer {

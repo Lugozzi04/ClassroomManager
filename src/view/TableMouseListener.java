@@ -33,12 +33,9 @@ public class TableMouseListener extends MouseAdapter implements ActionListener {
         this.classrooms = modelManager.getClassrooms();
         this.model = model;
         this.tablePanel = JPanel;
+        this.classNumber = modelManager.getClassNumberMatrix(10);
     }
 
-    public void setClassNumber(int[][] classNumber) {
-        this.classNumber = classNumber;
-
-    }
 
     private int getSelectedRow(MouseEvent e) {
         return table.rowAtPoint(e.getPoint());
@@ -53,7 +50,7 @@ public class TableMouseListener extends MouseAdapter implements ActionListener {
     public void mouseClicked(MouseEvent e) {
         int row = getSelectedRow(e); // Ottieni la riga cliccata
         int col = getSelectedColumn(e); // Ottieni la colonna cliccata
-
+        
         // Verifica che la cella cliccata sia valida
         if (row == -1 || col == -1) {
             return;
@@ -98,6 +95,7 @@ public class TableMouseListener extends MouseAdapter implements ActionListener {
         }else if(e.getActionCommand().equals("Modifica Prenotazione")){
             modifyReservation();
             jpaneShow.dispose();
+            dialog.dispose();
         }
     }
 
@@ -133,8 +131,10 @@ public class TableMouseListener extends MouseAdapter implements ActionListener {
         int row = table.getSelectedRow();
         int col = table.getSelectedColumn();
         Reservation r = modelManager.getReservation(selectedDate, classNumber[row][col], row + 8);
-        modelManager.removeReservation(r, classNumber[row][col]);
- 
+        System.out.println("Removing reservation: " + r.toString());
+        System.out.println("Classroom number: " + classNumber[row][col]);
+        if(modelManager.removeReservation(r, classNumber[row][col]))
+            System.out.println("Reservation removed");
         tablePanel.updateTable();
     }
 

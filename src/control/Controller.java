@@ -4,9 +4,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import model.entities.*;
 import view.FileChooser;
-import view.TablePanel;
 import view.MainFrame;
 import view.ReservationDialog;
+import view.TablePanel;
 
 
 

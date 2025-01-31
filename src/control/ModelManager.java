@@ -27,6 +27,19 @@ public class ModelManager {
         initReservation();
     }
 
+    public int[][] getClassNumberMatrix(int rows) {
+        int[][] matrix = new int[rows][classrooms.size()+1];
+        for (int i = 0; i < rows; i++) {
+            matrix[i][0] = -1;
+        }
+        for (int i = 0; i < rows; i++) {
+            for (int j = 1; j < classrooms.size()+1; j++) {
+                matrix[i][j] = classrooms.get(j-1).getNumber();
+            }
+        }
+        return matrix;
+    }
+
     public boolean addReservation(Reservation r, int classroomNumber) {
         return manager.addReservation(r.getDate(), classroomNumber, r)&&
                 cacheReservation.addLine(String.format(FORMAT, classroomNumber, r.toString()));
