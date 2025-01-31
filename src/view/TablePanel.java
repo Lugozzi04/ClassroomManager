@@ -7,18 +7,13 @@ import java.awt.*;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Properties;
-
 import org.jdatepicker.impl.*;
 import model.entities.Classroom;
 import model.entities.Reservation;
 import control.ModelManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.print.PageFormat;
-import java.awt.print.Printable;
 import java.awt.print.PrinterException;
-import java.awt.print.PrinterJob;
-
 
 public class TablePanel extends JPanel implements ActionListener {
     private JDatePickerImpl datePicker;
@@ -28,73 +23,78 @@ public class TablePanel extends JPanel implements ActionListener {
     private UtilDateModel model;
     private TableMouseListener listenerMouse;
 
-    // Costruttore
+    private static final int NUMBER_OF_ROWS = 10;
+    private static final int ROW_HEIGHT = 30;
+
     public TablePanel(ModelManager modelManager) {
         this.modelManager = modelManager;
         this.classrooms = modelManager.getClassrooms();
         
         setLayout(new BorderLayout());
-        configureDatePicker();
-        configureTable();
-        initializeUI();
+        
+        initializeComponents();
+        updateTable();
     }
 
-    // Configura il DatePicker
+    private void initializeComponents() {
+        configureDatePicker();
+        configureTable();
+        configureButtons();
+    }
+
     private void configureDatePicker() {
         model = new UtilDateModel();
         model.setSelected(true);
-        Properties p = new Properties();
-        p.put("text.today", "Today");
-        p.put("text.month", "Month");
-        p.put("text.year", "Year");
-        JDatePanelImpl datePanel = new JDatePanelImpl(model, p);
+
+        Properties datePickerProperties = new Properties();
+        datePickerProperties.put("text.today", "Today");
+        datePickerProperties.put("text.month", "Month");
+        datePickerProperties.put("text.year", "Year");
+
+        JDatePanelImpl datePanel = new JDatePanelImpl(model, datePickerProperties);
         datePicker = new JDatePickerImpl(datePanel, null);
         
         JButton datePickerButton = (JButton) datePicker.getComponent(1);
         datePickerButton.setText("Scegli Data");
         datePickerButton.revalidate();
         datePickerButton.repaint();
+        
+        datePicker.addActionListener(this);
+        add(datePicker, BorderLayout.NORTH);
     }
 
-    // Configura la JTable
     private void configureTable() {
         table = new JTable();
         table.setDefaultRenderer(Object.class, new CustomTableCellRenderer());
-        table.setRowHeight(30);
+        table.setRowHeight(ROW_HEIGHT);
+
         listenerMouse = new TableMouseListener(this, table, modelManager, model);
-        table.addMouseListener(listenerMouse);  // Aggiungi il listener alla tabella
+        table.addMouseListener(listenerMouse);
+        
+        add(new JScrollPane(table), BorderLayout.CENTER);
     }
 
-    // Inizializza l'interfaccia utente aggiungendo il DatePicker e la Tabella
-    private void initializeUI() {
+    private void configureButtons() {
         JButton printButton = new JButton("Stampa");
         printButton.addActionListener(this);
-        
-        // Aggiungi i componenti
-        add(datePicker, BorderLayout.NORTH);
-        add(new JScrollPane(table), BorderLayout.CENTER);
         add(printButton, BorderLayout.SOUTH);
-        
-        // Carica inizialmente la tabella
-        updateTable();
     }
 
-    // Aggiorna la tabella in base alla data selezionata
     public void updateTable() {
-        LocalDate date = getSelectedDate();
+        LocalDate selectedDate = getSelectedDate();
         String[] columnNames = createColumnNames();
-        String[][] data = createTableData(date);
-
+        String[][] data = createTableData(selectedDate);
+        
         table.setModel(new DefaultTableModel(data, columnNames));
     }
 
-    // Ottieni la data selezionata
     private LocalDate getSelectedDate() {
-        if (model == null) return LocalDate.now();
+        if (model == null) {
+            return LocalDate.now();
+        }
         return LocalDate.of(model.getYear(), model.getMonth() + 1, model.getDay());
     }
 
-    // Crea i nomi delle colonne della tabella
     private String[] createColumnNames() {
         String[] columnNames = new String[classrooms.size() + 1];
         columnNames[0] = "Orario";
@@ -104,12 +104,11 @@ public class TablePanel extends JPanel implements ActionListener {
         return columnNames;
     }
 
-    // Crea i dati per la tabella in base alla data
     private String[][] createTableData(LocalDate date) {
-        String[][] data = new String[10][classrooms.size() + 1];
-        String[] hours = {"08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00","18:00"};
+        String[][] data = new String[NUMBER_OF_ROWS][classrooms.size() + 1];
+        String[] hours = {"08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"};
 
-        for (int row = 0; row < 10; row++) {
+        for (int row = 0; row < NUMBER_OF_ROWS; row++) {
             data[row][0] = hours[row] + " - " + hours[row + 1];
             for (int col = 0; col < classrooms.size(); col++) {
                 Reservation res = modelManager.getReservation(date, classrooms.get(col).getNumber(), row + 8);
@@ -119,45 +118,37 @@ public class TablePanel extends JPanel implements ActionListener {
         return data;
     }
 
-    // Gestisce gli eventi come la selezione della data e la stampa della tabella
     @Override
     public void actionPerformed(ActionEvent ae) {
-        if (ae.getActionCommand().equals("Date selected")) {
-            updateTable();  // Quando la data cambia, aggiorna la tabella
-        } else if (ae.getActionCommand().equals("Stampa")) {
-            printTable();   // Quando si preme Stampa, avvia la stampa della tabella
+        String actionCommand = ae.getActionCommand();
+        if (actionCommand.equals("Date selected")) {
+            updateTable();
+        } else if (actionCommand.equals("Stampa")) {
+            printTable();
         }
     }
 
-    // Gestisce la stampa della tabella
     private void printTable() {
         try {
             boolean complete = table.print();
-            if (complete) {
-                JOptionPane.showMessageDialog(null, "Stampa completata!", "Successo", JOptionPane.INFORMATION_MESSAGE);
-            } else {
-                JOptionPane.showMessageDialog(null, "Stampa annullata!", "Attenzione", JOptionPane.WARNING_MESSAGE);
-            }
+            String message = complete ? "Stampa completata!" : "Stampa annullata!";
+            JOptionPane.showMessageDialog(null, message, complete ? "Successo" : "Attenzione", complete ? JOptionPane.INFORMATION_MESSAGE : JOptionPane.WARNING_MESSAGE);
         } catch (PrinterException e) {
             JOptionPane.showMessageDialog(null, "Errore di stampa: " + e.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    // Renderizza le celle della tabella con colori personalizzati
     private static class CustomTableCellRenderer extends DefaultTableCellRenderer {
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             Component cell = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            
-            // Personalizzazione del colore della cella
             if (column == 0) {
-                cell.setBackground(Color.YELLOW);  // Colore per la colonna "Orario"
+                cell.setBackground(Color.YELLOW);
             } else if ("".equals(value)) {
-                cell.setBackground(Color.WHITE);  // Celle vuote
+                cell.setBackground(Color.WHITE);
             } else {
-                cell.setBackground(Color.RED);    // Celle con prenotazione
+                cell.setBackground(Color.RED);
             }
-            
             return cell;
         }
     }

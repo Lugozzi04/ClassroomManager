@@ -10,7 +10,6 @@ import org.jdatepicker.impl.UtilDateModel;
 
 import model.entities.*;
 import control.ModelManager;
-import java.awt.Dialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
