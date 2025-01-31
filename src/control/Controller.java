@@ -25,12 +25,18 @@ public class Controller implements ActionListener {
     public Controller() {
         this.fileName = initializeFile();
         this.modelManager = new ModelManager(fileName);
+        if(!modelManager.initReservation()){
+            JOptionPane.showMessageDialog(null, "Errore nel caricamento delle prenotazioni. Probabile causa: File di formato invalido", "Errore", JOptionPane.ERROR_MESSAGE);
+            System.exit(0);
+        }
         this.tablePanel = new TablePanel(modelManager);
         this.mainFrame = new MainFrame(tablePanel);
         this.dialog = null;
 
         registerListeners();
-        modelManager.autoSave(AUTO_SAVE_INTERVAL);
+        if(!modelManager.autoSave(AUTO_SAVE_INTERVAL)){
+            JOptionPane.showMessageDialog(null, "Errore nel salvataggio automatico delle prenotazioni.", "Errore", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private String initializeFile() {
@@ -83,7 +89,9 @@ public class Controller implements ActionListener {
         int classNumber = dialog.getSelectedClassNumber();
 
         if (newReservation != null) {
-            modelManager.addReservation(newReservation, classNumber);
+            if(!modelManager.addReservation(newReservation, classNumber)){
+                JOptionPane.showMessageDialog(null, "Aula non prenotabile ", "Errore", JOptionPane.ERROR_MESSAGE);
+            }
             updateTable();
             dialog.dispose();
         }

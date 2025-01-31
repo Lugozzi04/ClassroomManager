@@ -97,6 +97,7 @@ public class Reservation  {
     }
 
     public static Reservation stringToReservation(String content) {
+        try{
         String[] p = content.split(";");
         String[] onlyDate = p[0].split("-");
         
@@ -107,6 +108,9 @@ public class Reservation  {
         String reason = p[4];
         
         return new Reservation(date, startHour, endHour ,name, reason);
+        }catch(NumberFormatException e){
+            return null;
+        }
     }
 
     public int[] getHours(){

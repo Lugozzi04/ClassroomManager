@@ -5,5 +5,4 @@ public class App {
         new Controller();
     }
 
-
 }

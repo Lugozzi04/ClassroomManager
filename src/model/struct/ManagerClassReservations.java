@@ -75,9 +75,16 @@ public class ManagerClassReservations <D,C extends Classroom> {
         if (!isClassroom(classroomNumber) || isOverlapping(key, classroomNumber, reservation)) {
             return false;
         }
+        
+        C classroom = classrooms.get(classroomNumber);
+        if(!classroom.isBookable(reservation.getEndHour()-reservation.getStartHour())){
+            return false;
+        }
 
         reservations.putIfAbsent(key, new HashMap<>());
         reservations.get(key).putIfAbsent(classroomNumber, new ArrayList<>());
+        
+        
 
         return reservations.get(key).get(classroomNumber).add(reservation);
     }

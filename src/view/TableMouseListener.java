@@ -12,6 +12,7 @@ import model.entities.*;
 import control.ModelManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.JOptionPane;
 
 
 public class TableMouseListener extends MouseAdapter implements ActionListener {
@@ -104,6 +105,11 @@ public class TableMouseListener extends MouseAdapter implements ActionListener {
         int row = table.getSelectedRow();
         int col = table.getSelectedColumn();
         Reservation reservation = modelManager.getReservation(selectedDate, classNumber[row][col], row + 8);
+        if(reservation == null){
+            JOptionPane.showMessageDialog(null, "Prenotazione non trovata", "Errore", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
         dialog = new ReservationDialog(modelManager.getClassroom(classNumber[row][col]), reservation.getStartHour(), reservation.getEndHour());
         dialog.setVisible(true);
         dialog.addActionListener(this);
@@ -114,6 +120,11 @@ public class TableMouseListener extends MouseAdapter implements ActionListener {
         int col = table.getSelectedColumn();
         Reservation oldReservation = modelManager.getReservation(selectedDate, classNumber[row][col], row + 8);
         Reservation newReservation = dialog.getSelectedReservation();
+
+        if (newReservation == null) {
+            JOptionPane.showMessageDialog(null, "La nuova prenotazione non è valida", "Errore", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
         modelManager.updateReservation(oldReservation, newReservation, classNumber[row][col]);
         tablePanel.updateTable();

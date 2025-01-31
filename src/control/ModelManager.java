@@ -26,7 +26,6 @@ public class ModelManager {
         CacheLoader loader = new CacheLoader(fileName);
         cacheReservation=loader.loadCache();
         writerReservation = new Writer(fileName);
-        initReservation();
     }
 
     public int[][] getClassNumberMatrix(int rows) {
@@ -71,13 +70,18 @@ public class ModelManager {
         return writerTMP.overWriteFile();
     }
 
-    public void autoSave(int intervalSeconds){
+    public boolean autoSave(int intervalSeconds){
+        try{
         if (autoSaveThread != null) {
             autoSaveThread.stopAutoSave(); // Ferma il vecchio thread
         }
         writerTMP=new Writer("RESERVATIONS_TMP.txt", cacheReservation);
         autoSaveThread = new AutoSave(writerTMP, intervalSeconds);
         autoSaveThread.start();
+        }catch(Exception e){
+            return false;
+        }
+        return true;
     }
 
     public Reservation getReservation(LocalDate date, int classroomNumber, int hour) {
@@ -100,13 +104,22 @@ public class ModelManager {
         return classes;
     }
 
-    private void initReservation(){
-        for (int i = 0; i < cacheReservation.getSize(); i++) {
+    public boolean initReservation(){
+        try {
+        
+            for (int i = 0; i < cacheReservation.getSize(); i++) {
             String line = cacheReservation.getLine(i);      
             String[] parts = line.split("\\{");
             Reservation r = Reservation.stringToReservation(parts[1]);
+            if(r==null){
+                return false;
+            }
             manager.addReservation(r.getDate(),Integer.parseInt(parts[0]),r);
+            }
+        } catch (Exception e) {
+            return false;
         }
+        return true;
         
     }
 

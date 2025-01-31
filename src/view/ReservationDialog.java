@@ -120,8 +120,12 @@ public final class ReservationDialog extends JDialog {
         );
         int startHour = Integer.parseInt(((String) startHourComboBox.getSelectedItem()).split(":")[0]);
         int endHour = Integer.parseInt(((String) endHourComboBox.getSelectedItem()).split(":")[0]);
-
+        if(nameField.getText().isEmpty() || descriptionField.getText().isEmpty()|| startHour >= endHour){
+            JOptionPane.showMessageDialog(null, "I dati inseriti non sono validi", "Errore", JOptionPane.ERROR_MESSAGE);
+            return null;
+        }
         return new Reservation(date, startHour, endHour, nameField.getText(), descriptionField.getText());
+        
     }
 
     public int getSelectedClassNumber() {
