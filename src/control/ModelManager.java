@@ -11,9 +11,11 @@ public class ModelManager {
     
     private final ManagerClassReservations<LocalDate,Classroom> manager;
     private final Cache cacheReservation;
-    private final WriterCache writerReservation;
+    private final Writer writerReservation;
     private AutoSave autoSaveThread;
     private final List<Classroom> classrooms;
+
+    private Writer writerTMP;
 
     private static final String FORMAT = "%d{%s";
     
@@ -23,7 +25,7 @@ public class ModelManager {
         this.manager = new ManagerClassReservations<>(classrooms);
         CacheLoader loader = new CacheLoader(fileName);
         cacheReservation=loader.loadCache();
-        writerReservation = new WriterCache(fileName, cacheReservation);
+        writerReservation = new Writer(fileName);
         initReservation();
     }
 
@@ -61,15 +63,20 @@ public class ModelManager {
                cacheReservation.addLine(formattedNew);
     }
 
-    public boolean save(){
-        return writerReservation.saveToFile();
+    public boolean finalSave(){
+        return writerReservation.overWriteFile(cacheReservation.getCache());
     }
 
-    public void autoSave(int intervalMinutes){
+    public boolean saveTMP(){
+        return writerTMP.overWriteFile();
+    }
+
+    public void autoSave(int intervalSeconds){
         if (autoSaveThread != null) {
             autoSaveThread.stopAutoSave(); // Ferma il vecchio thread
         }
-        autoSaveThread = new AutoSave(writerReservation, intervalMinutes);
+        writerTMP=new Writer("RESERVATIONS_TMP.txt", cacheReservation);
+        autoSaveThread = new AutoSave(writerTMP, intervalSeconds);
         autoSaveThread.start();
     }
 

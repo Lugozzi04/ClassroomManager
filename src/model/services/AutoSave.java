@@ -2,13 +2,13 @@ package model.services;
 
 public class AutoSave extends Thread {
 
-    private final WriterCache writer;
-    private final int intervalMinutes;
+    private final Writer writer;
+    private final int intervalSeconds;
     private volatile boolean running;
 
-    public AutoSave(WriterCache writer, int intervalMinutes) {
+    public AutoSave(Writer writer, int intervalSeconds) {
         this.writer = writer;
-        this.intervalMinutes = intervalMinutes;
+        this.intervalSeconds = intervalSeconds;
         this.running = true;
     }
 
@@ -16,14 +16,14 @@ public class AutoSave extends Thread {
     @SuppressWarnings("SleepWhileInLoop")
     public void run() {
         // Converti l'intervallo in minuti in millisecondi
-        long intervalMillis = intervalMinutes * 60 * 1000;
+        long intervalMillis = intervalSeconds * 60 * 10;
         
         try {
             while (running) {
                 // Attendi l'intervallo specificato
                 try {
                     Thread.sleep(intervalMillis);
-                    if(writer.saveToFile()){
+                    if(writer.overWriteFile()){
                         System.out.println("Salvataggio automatico eseguito");
                     } else {
                         System.err.println("Errore nel salvataggio automatico");

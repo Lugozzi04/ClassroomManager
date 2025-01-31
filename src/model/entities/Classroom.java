@@ -9,8 +9,11 @@ public abstract class Classroom {
     private String info;
 
     public Classroom(int number, int capacity, String info,String type) {
-        if(capacity<0||number<0){
+        if(capacity<0){
             throw new IllegalArgumentException("La capienza non può essere negativa");
+        }
+        if(number<0){
+            throw new IllegalArgumentException("Il numero non può essere negativo");
         }
         this.number = number;
         this.capacity = capacity;

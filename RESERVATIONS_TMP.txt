@@ -1,3 +1,2 @@
-5{2025-01-31;9;11;prova;prova
 3{2025-02-05;10;14;Luca rossi;Lezione di storia moderna
 3{2025-01-31;8;10;Prova;prova

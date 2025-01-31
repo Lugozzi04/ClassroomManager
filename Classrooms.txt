@@ -1,2 +1,4 @@
 3;80;Descrizione;Didattica
 5;45;Descrizione;Laboratorio
+1;60;Descrizione;Didattica
+6;70;Descrizione;Laboratorio

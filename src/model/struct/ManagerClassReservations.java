@@ -12,12 +12,14 @@ public class ManagerClassReservations <D,C extends Classroom> {
     private final Map<Integer, C> classrooms;
     private final Map<D, Map<Integer, List<Reservation>>> reservations;
 
+    private final static int DEFAULT_INT_ERROR = -1;
+
     public ManagerClassReservations(List<C> classrooms) {
         this.reservations = new HashMap<>();
         this.classrooms = initClassrooms(classrooms);
     }
-    //TODO: Serve?
-    public List<C> getClassrooms(D key) {
+
+    /*public List<C> getClassrooms(D key) {
         List<C> list = new ArrayList<>();
         if (reservations.containsKey(key)) {
             for (Map.Entry<Integer, List<Reservation>> entry : reservations.get(key).entrySet()) {
@@ -25,7 +27,7 @@ public class ManagerClassReservations <D,C extends Classroom> {
             }
         }
         return list;
-    }
+    }*/
 
     private Map<Integer, C> initClassrooms(List<C> classrooms) {
         Map<Integer, C> map = new HashMap<>();
@@ -42,7 +44,7 @@ public class ManagerClassReservations <D,C extends Classroom> {
                 return entry.getKey(); // la chiave associata
             }
         }
-        return -1; // Non trovata
+        return DEFAULT_INT_ERROR; // Non trovata
     }
 
     private boolean isClassroom(int classroomNumber) {

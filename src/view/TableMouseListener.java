@@ -6,13 +6,14 @@ import java.util.List;
 
 import javax.swing.JTable;
 
-import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
 
 import model.entities.*;
 import control.ModelManager;
+import java.awt.Dialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 
 public class TableMouseListener extends MouseAdapter implements ActionListener {
 
@@ -24,78 +25,79 @@ public class TableMouseListener extends MouseAdapter implements ActionListener {
     private TablePanel tablePanel;
     private LocalDate selectedDate;
     private int[][] classNumber;
+    private ShowDialog showDialog;
 
-    private ShowDialog jpaneShow;
+    private static final int NUMBER_OR_ROWS = 10;
 
-    public TableMouseListener(TablePanel JPanel, JTable table, ModelManager modelManager, UtilDateModel model) {
+    // Costruttore
+    public TableMouseListener(TablePanel tablePanel, JTable table, ModelManager modelManager, UtilDateModel model) {
         this.table = table;
         this.modelManager = modelManager;
         this.classrooms = modelManager.getClassrooms();
         this.model = model;
-        this.tablePanel = JPanel;
-        this.classNumber = modelManager.getClassNumberMatrix(10);
+        this.tablePanel = tablePanel;
+        this.classNumber = modelManager.getClassNumberMatrix(NUMBER_OR_ROWS);
     }
 
-
-    private int getSelectedRow(MouseEvent e) {
-        return table.rowAtPoint(e.getPoint());
-    }
-    private int getSelectedColumn(MouseEvent e) {
-        return table.columnAtPoint(e.getPoint());
-    }
-    private LocalDate getSelectedDate(){
-        return LocalDate.of(model.getYear(), model.getMonth() + 1, model.getDay());
-    }
     @Override
     public void mouseClicked(MouseEvent e) {
-        int row = getSelectedRow(e); // Ottieni la riga cliccata
-        int col = getSelectedColumn(e); // Ottieni la colonna cliccata
-        
-        // Verifica che la cella cliccata sia valida
-        if (row == -1 || col == -1) {
-            return;
-        }
+        int row = getSelectedRow(e);
+        int col = getSelectedColumn(e);
 
-        // Se la cella cliccata è nella prima colonna (Orario), non fare nulla
-        if (col == 0) {
-            return;
+        // Verifica se la cella è valida
+        if (row == -1 || col == -1 || col == 0) {
+            return;  // Se la cella non è valida o è nella colonna dell'orario, non fare nulla
         }
 
         String cellValue = (String) table.getValueAt(row, col);
 
-        if ("Prenotato".equals(cellValue)) {
-            // La cella è rossa, quindi mostra la finestra di dettaglio della prenotazione
-            selectedDate = getSelectedDate();
-            Reservation reservation = modelManager.getReservation(selectedDate, classNumber[row][col], row + 8);
-            jpaneShow = new ShowDialog(reservation); // Passa il JPanelTable come proprietario
-            jpaneShow.addShowListeners(this);
-            jpaneShow.setVisible(true);
+        if (!cellValue.isEmpty()) {
+            // Se la cella contiene un nome, è una prenotazione, mostra i dettagli
+            showReservationDetails(row, col);
         } else {
             // Altrimenti, mostra i dettagli dell'aula
-            Classroom classroom = modelManager.getClassroom(classNumber[row][col]);
-            jpaneShow = new ShowDialog(classroom); // Passa il JPanelTable come proprietario
-            jpaneShow.setVisible(true);
+            showClassroomDetails(row, col);
         }
+    }
+
+    private int getSelectedRow(MouseEvent e) {
+        return table.rowAtPoint(e.getPoint());
+    }
+
+    private int getSelectedColumn(MouseEvent e) {
+        return table.columnAtPoint(e.getPoint());
+    }
+
+    private LocalDate getSelectedDate() {
+        return LocalDate.of(model.getYear(), model.getMonth() + 1, model.getDay());
+    }
+
+    private void showReservationDetails(int row, int col) {
+        selectedDate = getSelectedDate();
+        Reservation reservation = modelManager.getReservation(selectedDate, classNumber[row][col], row + 8);
+        showDialog = new ShowDialog(reservation);
+        showDialog.addShowListeners(this);
+        showDialog.setVisible(true);
+    }
+
+    private void showClassroomDetails(int row, int col) {
+        Classroom classroom = modelManager.getClassroom(classNumber[row][col]);
+        showDialog = new ShowDialog(classroom);
+        showDialog.setVisible(true);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        System.out.println(e.getActionCommand());
-        if(e.getActionCommand().equals("Edit")){
-            openEditReservationDialog();
-            jpaneShow.dispose();
 
-        } else if(e.getActionCommand().equals("Remove")){
+        if (e.getActionCommand().equals(showDialog.getEditButtonCommand())) {
+            openEditReservationDialog();
+        } else if (e.getActionCommand().equals(showDialog.getRemoveButtonCommand())) {
             removeReservation();
-            jpaneShow.dispose();
-            
-        }else if(e.getActionCommand().equals("Aggiungi Prenotazione")){
-            addReservation();
-            jpaneShow.dispose();
-        }else if(e.getActionCommand().equals("Modifica Prenotazione")){
+            showDialog.dispose();
+        } else if (e.getActionCommand().equals(dialog.getSubmitButtonCommand())) {
             modifyReservation();
-            jpaneShow.dispose();
             dialog.dispose();
+            showDialog.dispose();
         }
     }
 
@@ -109,32 +111,24 @@ public class TableMouseListener extends MouseAdapter implements ActionListener {
     }
 
     private void modifyReservation() {
-        LocalDate selectedDate = LocalDate.of(model.getYear(), model.getMonth() + 1, model.getDay());
         int row = table.getSelectedRow();
         int col = table.getSelectedColumn();
-        Reservation oldReservation= modelManager.getReservation(selectedDate, classNumber[row][col], row + 8);
+        Reservation oldReservation = modelManager.getReservation(selectedDate, classNumber[row][col], row + 8);
         Reservation newReservation = dialog.getSelectedReservation();
+
         modelManager.updateReservation(oldReservation, newReservation, classNumber[row][col]);
         tablePanel.updateTable();
     }
 
-    private void addReservation() {
-        Reservation newReservation = dialog.getSelectedReservation();
-        int classNumber = dialog.getSelectedClassNumber();
-        if (newReservation != null) {
-            modelManager.addReservation(newReservation, classNumber);
-            tablePanel.updateTable();
-        }
-    }
-    private void removeReservation(){
-        LocalDate selectedDate = LocalDate.of(model.getYear(), model.getMonth() + 1, model.getDay());
+    private void removeReservation() {
         int row = table.getSelectedRow();
         int col = table.getSelectedColumn();
-        Reservation r = modelManager.getReservation(selectedDate, classNumber[row][col], row + 8);
-        System.out.println("Removing reservation: " + r.toString());
-        System.out.println("Classroom number: " + classNumber[row][col]);
-        if(modelManager.removeReservation(r, classNumber[row][col]))
-            System.out.println("Reservation removed");
+        Reservation reservation = modelManager.getReservation(selectedDate, classNumber[row][col], row + 8);
+
+        if (modelManager.removeReservation(reservation, classNumber[row][col])) {
+            System.out.println("Reservation removed: " + reservation);
+        }
+
         tablePanel.updateTable();
     }
 

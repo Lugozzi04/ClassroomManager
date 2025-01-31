@@ -8,35 +8,30 @@ import javax.swing.JPanel;
 
 public class MenuPanel extends JPanel {
 
-    private final JButton printButton;
     private final JButton saveButton;
     private final JButton addButton;
+    private static final Dimension BUTTON_SIZE = new Dimension(120, 50);
 
     public MenuPanel() {
         // Imposta il layout del pannello
         this.setLayout(new FlowLayout(FlowLayout.LEFT));
 
-        // Crea i bottoni con dimensioni fisse
-        Dimension buttonSize = new Dimension(120, 50);
-
         // Crea i bottoni
-        printButton = new JButton("Stampa");
-        printButton.setPreferredSize(buttonSize);
-        saveButton = new JButton("Salva");
-        saveButton.setPreferredSize(buttonSize);
-        addButton = new JButton("Aggiungi");
-        addButton.setPreferredSize(buttonSize);
+        saveButton = createButton("Salva");
+        addButton = createButton("Aggiungi");
 
         // Aggiungi i bottoni al pannello
-        this.add(printButton);
         this.add(saveButton);
         this.add(addButton);
         
     }
 
-    public void setTableButtonListener(ActionListener listener) {
-        printButton.addActionListener(listener);
+    private JButton createButton(String text) {
+        JButton button = new JButton(text);
+        button.setPreferredSize(BUTTON_SIZE);
+        return button;
     }
+
 
     public void setSaveButtonListener(ActionListener listener) {
         saveButton.addActionListener(listener);
@@ -45,4 +40,15 @@ public class MenuPanel extends JPanel {
     public void setAddButtonListener(ActionListener listener) {
         addButton.addActionListener(listener);
     }
+
+    public String getSaveButtonCommand() {
+        return saveButton.getActionCommand();
+    }
+
+    public String getAddButtonCommand() {
+        return addButton.getActionCommand();
+    }
+
+
+    
 }
