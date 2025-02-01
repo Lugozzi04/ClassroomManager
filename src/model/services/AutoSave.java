@@ -1,17 +1,27 @@
 package model.services;
 
+/**
+ * Classe che rappresenta un thread per il salvataggio automatico dei dati
+ */
 public class AutoSave extends Thread {
 
     private final Writer writer;
     private final int intervalSeconds;
     private volatile boolean running;
-
+    /**
+     * Costruttore di AutoSave 
+     * @param writer
+     * @param intervalSeconds
+     * @param running=true default
+     */
     public AutoSave(Writer writer, int intervalSeconds) {
         this.writer = writer;
         this.intervalSeconds = intervalSeconds;
         this.running = true;
     }
-
+    /**
+     * Metodo che esegue il salvataggio automatico dei dati
+     */
     @Override
     @SuppressWarnings("SleepWhileInLoop")
     public void run() {
@@ -41,7 +51,9 @@ public class AutoSave extends Thread {
         }
     }
 
-    // Metodo per fermare il ciclo
+    /**
+     * Metodo per fermare il salvataggio automatico
+     */
     public void stopAutoSave() {
         running = false;  // Imposta la variabile running su false
         this.interrupt();
@@ -52,7 +64,9 @@ public class AutoSave extends Thread {
         }
     }
 
-    // Metodo per riattivare il ciclo
+    /**
+     * Metodo per attivare il salvataggio automatico
+     */
     public void activeAutoSave() {
         running = true;  // Imposta la variabile running su true
         if (!this.isAlive()) {

@@ -84,8 +84,13 @@ public class TablePanel extends JPanel implements ActionListener {
         LocalDate selectedDate = getSelectedDate();
         String[] columnNames = createColumnNames();
         String[][] data = createTableData(selectedDate);
-        
-        table.setModel(new DefaultTableModel(data, columnNames));
+        DefaultTableModel tableModel = new DefaultTableModel(data, columnNames) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Rende tutte le celle non modificabili
+            }
+        };
+        table.setModel(tableModel);
     }
 
     private LocalDate getSelectedDate() {
@@ -152,4 +157,5 @@ public class TablePanel extends JPanel implements ActionListener {
             return cell;
         }
     }
+
 }

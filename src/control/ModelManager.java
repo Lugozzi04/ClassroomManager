@@ -3,9 +3,14 @@ package control;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import model.entities.*;
-import model.services.*;
-import model.struct.*;
+
+import model.entities.Classroom;
+import model.entities.Reservation;
+import model.services.AutoSave;
+import model.services.Cache;
+import model.services.CacheLoader;
+import model.services.Writer;
+import model.struct.ManagerClassReservations;
 
 public class ModelManager {
     
@@ -106,15 +111,15 @@ public class ModelManager {
 
     public boolean initReservation(){
         try {
-        
+            
             for (int i = 0; i < cacheReservation.getSize(); i++) {
-            String line = cacheReservation.getLine(i);      
-            String[] parts = line.split("\\{");
-            Reservation r = Reservation.stringToReservation(parts[1]);
-            if(r==null){
-                return false;
-            }
-            manager.addReservation(r.getDate(),Integer.parseInt(parts[0]),r);
+                String line = cacheReservation.getLine(i);      
+                String[] parts = line.split("\\{");
+                Reservation r = Reservation.stringToReservation(parts[1]);
+                if(r==null){
+                    return false;
+                }
+                manager.addReservation(r.getDate(),Integer.parseInt(parts[0]),r);
             }
         } catch (Exception e) {
             return false;

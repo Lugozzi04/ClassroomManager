@@ -110,7 +110,7 @@ public class TableMouseListener extends MouseAdapter implements ActionListener {
             return;
         }
 
-        dialog = new ReservationDialog(modelManager.getClassroom(classNumber[row][col]), reservation.getStartHour(), reservation.getEndHour());
+        dialog = new ReservationDialog(modelManager.getClassroom(classNumber[row][col]), reservation.getStartHour(), reservation.getEndHour(),reservation.getDate());
         dialog.setVisible(true);
         dialog.addActionListener(this);
     }

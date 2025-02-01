@@ -1,7 +1,14 @@
 package model.entities;
-
+/** 
+ * Classe che rappresenta un'aula didattica
+ */
 public class ClassroomDidactic extends Classroom {
-
+    /**
+     * Costruttore di ClassroomDidactic
+     * @param numero
+     * @param capienza
+     * @param info
+     */
     public ClassroomDidactic(int numero, int capienza,String info) {
         super(numero, capienza,info, "Didattica");
     }

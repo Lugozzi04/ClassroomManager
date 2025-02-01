@@ -2,8 +2,10 @@ package control;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import javax.swing.JOptionPane;
-import model.entities.*;
+
+import model.entities.Reservation;
 import view.FileChooser;
 import view.MainFrame;
 import view.ReservationDialog;

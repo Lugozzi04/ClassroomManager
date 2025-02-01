@@ -1,13 +1,23 @@
 package model.entities;
 
 import java.util.Objects;
-
+/**
+ * Classe astratta che rappresenta un'aula
+ */
 public abstract class Classroom {
     private int number;
     private int capacity;
     private final String type;
     private String info;
 
+    /**
+     * Costruttore di Classroom
+     * @param number numero dell'aula
+     * @param capacity capienza dell'aula
+     * @param info informazioni sull'aula
+     * @param type tipo di aula
+     * @throws IllegalArgumentException se la capienza o il numero sono negativi.
+     */
     public Classroom(int number, int capacity, String info,String type) {
         if(capacity<0){
             throw new IllegalArgumentException("La capienza non può essere negativa");
@@ -20,7 +30,13 @@ public abstract class Classroom {
         this.type = type;
         this.info = info;
     }
-    
+
+    /**
+     * Verifica se l'aula è prenotabile per un certo numero di ore.
+     *
+     * @param hours Il numero di ore per cui si vuole prenotare l'aula.
+     * @return true se l'aula è prenotabile, false altrimenti.
+     */
     public abstract boolean isBookable(int hours);
 
     //all get and set for all attributes
@@ -37,7 +53,6 @@ public abstract class Classroom {
         this.number = number;
     }
 
-
     public int getCapacity(){
         return capacity;
     }
@@ -50,7 +65,10 @@ public abstract class Classroom {
     public void setInfo(String info){
         this.info=info;
     }
-
+    /**
+     * Verifica se due oggetti Classroom sono uguali, confrontando i loro attributi.
+     * @param obj oggetto da confrontare
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
@@ -59,7 +77,7 @@ public abstract class Classroom {
         return number == that.number &&
                capacity == that.capacity &&
                type.equals(that.type) &&
-               Objects.equals(info, that.info);  // Usa Objects.equals per evitare problemi con null
+               Objects.equals(info, that.info);  
     }
 
     @Override
@@ -71,7 +89,11 @@ public abstract class Classroom {
     public String toString(){
         return "Aula:"+number+" "+type;
     }
-
+    /**
+     * Metodo che converte una stringa in un oggetto Classroom.
+     * @param content
+     * @return Classroom
+     */
     public static Classroom stringToClassroom(String content){
         String[] values = content.split("\\;");
         if(values.length!=4){

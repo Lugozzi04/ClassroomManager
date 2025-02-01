@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import model.entities.*;
+
+import model.entities.Classroom;
+import model.entities.Reservation;
 
 
 public class ManagerClassReservations <D,C extends Classroom> {
@@ -19,15 +21,6 @@ public class ManagerClassReservations <D,C extends Classroom> {
         this.classrooms = initClassrooms(classrooms);
     }
 
-    /*public List<C> getClassrooms(D key) {
-        List<C> list = new ArrayList<>();
-        if (reservations.containsKey(key)) {
-            for (Map.Entry<Integer, List<Reservation>> entry : reservations.get(key).entrySet()) {
-                list.add(classrooms.get(entry.getKey()));
-            }
-        }
-        return list;
-    }*/
 
     private Map<Integer, C> initClassrooms(List<C> classrooms) {
         Map<Integer, C> map = new HashMap<>();
