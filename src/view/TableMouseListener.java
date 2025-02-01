@@ -14,7 +14,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
 
-
+/**
+ * TableMouseListener è una classe che implementa un MouseListener per la tabella
+ */
 public class TableMouseListener extends MouseAdapter implements ActionListener {
 
     private JTable table;
@@ -29,7 +31,13 @@ public class TableMouseListener extends MouseAdapter implements ActionListener {
 
     private static final int NUMBER_OR_ROWS = 10;
 
-    // Costruttore
+    /**
+     * Costruttore della classe TableMouseListener
+     * @param tablePanel
+     * @param table
+     * @param modelManager
+     * @param model
+     */
     public TableMouseListener(TablePanel tablePanel, JTable table, ModelManager modelManager, UtilDateModel model) {
         this.table = table;
         this.modelManager = modelManager;
@@ -59,19 +67,34 @@ public class TableMouseListener extends MouseAdapter implements ActionListener {
             showClassroomDetails(row, col);
         }
     }
-
+    /**
+     * Metodo che restituisce la riga selezionata
+     * @param e
+     * @return
+     */
     private int getSelectedRow(MouseEvent e) {
         return table.rowAtPoint(e.getPoint());
     }
-
+    /**
+     * Metodo che restituisce la colonna selezionata
+     * @param e
+     * @return
+     */
     private int getSelectedColumn(MouseEvent e) {
         return table.columnAtPoint(e.getPoint());
     }
-
+    /**
+     * Metodo che restituisce la data selezionata
+     * @return
+     */
     private LocalDate getSelectedDate() {
         return LocalDate.of(model.getYear(), model.getMonth() + 1, model.getDay());
     }
-
+    /**
+     * Metodo che mostra i dettagli della prenotazione
+     * @param row
+     * @param col
+     */
     private void showReservationDetails(int row, int col) {
         selectedDate = getSelectedDate();
         Reservation reservation = modelManager.getReservation(selectedDate, classNumber[row][col], row + 8);
@@ -79,14 +102,20 @@ public class TableMouseListener extends MouseAdapter implements ActionListener {
         showDialog.addShowListeners(this);
         showDialog.setVisible(true);
     }
-
+    /**
+     * Metodo che mostra i dettagli dell'aula
+     * @param row
+     * @param col
+     */
     private void showClassroomDetails(int row, int col) {
         Classroom classroom = modelManager.getClassroom(classNumber[row][col]);
         showDialog = new ShowDialog(classroom);
         showDialog.setVisible(true);
     }
-
-    @Override
+    /**
+     * Metodo che gestisce gli eventi
+     */
+    @Override   
     public void actionPerformed(ActionEvent e) {
 
         if (e.getActionCommand().equals(showDialog.getEditButtonCommand())) {
@@ -100,7 +129,9 @@ public class TableMouseListener extends MouseAdapter implements ActionListener {
             showDialog.dispose();
         }
     }
-
+    /**
+     * Metodo che apre il dialog per modificare la prenotazione
+     */
     private void openEditReservationDialog() {
         int row = table.getSelectedRow();
         int col = table.getSelectedColumn();
@@ -114,7 +145,9 @@ public class TableMouseListener extends MouseAdapter implements ActionListener {
         dialog.setVisible(true);
         dialog.addActionListener(this);
     }
-
+    /**
+     * Metodo che modifica la prenotazione
+     */
     private void modifyReservation() {
         int row = table.getSelectedRow();
         int col = table.getSelectedColumn();
@@ -129,7 +162,9 @@ public class TableMouseListener extends MouseAdapter implements ActionListener {
         modelManager.updateReservation(oldReservation, newReservation, classNumber[row][col]);
         tablePanel.updateTable();
     }
-
+    /**
+     * Metodo che rimuove la prenotazione
+     */
     private void removeReservation() {
         int row = table.getSelectedRow();
         int col = table.getSelectedColumn();

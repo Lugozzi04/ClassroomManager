@@ -12,7 +12,9 @@ import view.ReservationDialog;
 import view.TablePanel;
 
 
-
+/**
+ * Classe che gestisce la logica di business dell'applicazione e la comunicazione con il livello di presentazione.
+ */
 public class Controller implements ActionListener {
     private final MainFrame mainFrame;
     private final ModelManager modelManager;
@@ -23,7 +25,9 @@ public class Controller implements ActionListener {
 
     private static final int AUTO_SAVE_INTERVAL = 10;
     private static final String DEFAULT_FILE = "Reservations.txt";
-
+    /**
+     * Costruttore della classe Controller che inizializza il modelManager e la tabella.
+    */
     public Controller() {
         this.fileName = initializeFile();
         this.modelManager = new ModelManager(fileName);
@@ -40,14 +44,20 @@ public class Controller implements ActionListener {
             JOptionPane.showMessageDialog(null, "Errore nel salvataggio automatico delle prenotazioni.", "Errore", JOptionPane.ERROR_MESSAGE);
         }
     }
-
+    /**
+     * Metodo che inizializza il file di cache.
+     * @return il nome del file di cache.
+     */
     private String initializeFile() {
         FileChooser fileChooser = new FileChooser(DEFAULT_FILE);
         String chosenFile = fileChooser.chooseFile();
         validateFile(chosenFile);
         return chosenFile;
     }
-
+    /**
+     * Metodo che controlla se il file selezionato è un file di testo.
+     * @param fileName
+     */
     private void validateFile(String fileName){
         String[] f=fileName.split("\\.");
         if(f.length!=2 || !f[1].equals("txt")){
@@ -55,11 +65,17 @@ public class Controller implements ActionListener {
             System.exit(0);
         }
     }
-
+    /**
+     * Metodo che registra i listener per i pulsanti della finestra principale.
+     * @param mainFrame
+     */
     private void registerListeners() {
         mainFrame.setActionListener(this);
     }
-
+    /**
+     * Metodo che gestisce gli eventi generati dai pulsanti della finestra principale.
+     * @param e
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
 
@@ -77,13 +93,17 @@ public class Controller implements ActionListener {
     }
 
 
-
+    /**
+     * Metodo che apre la finestra di dialogo per l'aggiunta di una prenotazione.
+     */
     private void openAddReservationDialog() {
         dialog = new ReservationDialog(modelManager.getClassrooms());
         dialog.setVisible(true);
         dialog.addActionListener(this);
     }
-
+    /**
+     * Metodo che aggiunge una prenotazione alla lista delle prenotazioni e alla tabella.
+     */
     private void addReservation() {
         if (dialog == null) return;
 
@@ -98,7 +118,9 @@ public class Controller implements ActionListener {
             dialog.dispose();
         }
     }
-
+    /**
+     * Metodo che salva le prenotazioni nel file di cache.
+     */
     private void saveReservations() {
         int response = JOptionPane.showConfirmDialog(mainFrame, "Vuoi sovrascrivere il file "+fileName+"?", "Conferma Salvataggio", JOptionPane.YES_NO_OPTION);
         
@@ -113,8 +135,10 @@ public class Controller implements ActionListener {
             mainFrame.showMessage("Errore nel salvataggio delle prenotazioni.");
         }
 
-    }
-
+    }   
+    /**
+     * Metodo che aggiorna la tabella delle prenotazioni.
+     */
     private void updateTable() {
         mainFrame.updateTable();
     }

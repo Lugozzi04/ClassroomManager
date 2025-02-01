@@ -39,29 +39,51 @@ public abstract class Classroom {
      */
     public abstract boolean isBookable(int hours);
 
-    //all get and set for all attributes
+    /**
+     * Restituisce il tipo di aula.
+     * @return
+     */
     public String getType(){
         return type;
     }
 
-    //non esiste il set tipo
+    /**
+     * Restituisce il numero dell'aula.
+     */
     public int getNumber(){
         return number;
     }
-
+    /**
+     * Imposta il numero dell'aula.
+     */
     public void setNumber(int number) {
         this.number = number;
     }
-
+    /**
+     * Restituisce la capienza dell'aula.
+     * @return
+     */
     public int getCapacity(){
         return capacity;
     }
+    /**
+     * Imposta la capienza dell'aula.
+     * @param capacity
+     */
     public void setCapacity(int capacity){
         this.capacity=capacity;
     }
+    /**
+     * Restituisce le informazioni sull'aula.
+     * @return
+     */
     public String getInfo(){
         return info;
     }
+    /**
+     * Imposta le informazioni sull'aula.
+     * @param info
+     */
     public void setInfo(String info){
         this.info=info;
     }

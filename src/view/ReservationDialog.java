@@ -11,7 +11,9 @@ import org.jdatepicker.impl.*;
 
 import model.entities.Classroom;
 import model.entities.Reservation;
-
+/**
+ * Classe che rappresenta un dialog per l'inserimento e la modifica di una prenotazione.
+ */
 public final class ReservationDialog extends JDialog {
     
     private final JComboBox<Classroom> classroomsComboBox;
@@ -25,7 +27,10 @@ public final class ReservationDialog extends JDialog {
     private  UtilDateModel model;
 
     private final boolean isEditable;
-
+    /**
+     * Costruttore della classe.
+     * @param classrooms
+     */
     public ReservationDialog(List<Classroom> classrooms) {
         super();
         this.classroomsComboBox = new JComboBox<>();
@@ -41,7 +46,13 @@ public final class ReservationDialog extends JDialog {
         this.isEditable = true;
         initComponents();
     }
-
+    /**
+     * Costruttore della classe.
+     * @param classroom
+     * @param startHour
+     * @param endHour
+     * @param date
+     */
     public ReservationDialog(Classroom classroom, int startHour, int endHour,LocalDate date) {
         super();
         this.classroomsComboBox = new JComboBox<>(new Classroom[]{classroom});
@@ -59,7 +70,9 @@ public final class ReservationDialog extends JDialog {
         this.isEditable = false;
         initComponents();
     }
-
+    /**
+     * Metodo che inizializza i componenti del dialog.
+     */
     private void initComponents() {
         setLayout(new GridLayout(7, 2));
 
@@ -89,16 +102,26 @@ public final class ReservationDialog extends JDialog {
         setLocationRelativeTo(null);
         setVisible(true);
     }
-
+    /**
+     * Metodo che crea un JComboBox di ore.
+     * @return
+     */
     private JComboBox<String> createHourComboBox() {
         String[] ore = {"08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"};
         return new JComboBox<>(ore);
     }
-
+    /**
+     * Metodo che formatta l'ora in modo da avere sempre due cifre.
+     * @param hour
+     * @return
+     */
     private String formatHour(int hour) {
         return String.format("%02d:00", hour);
     }
-
+    /**
+     * Metodo che crea un JDatePicker per la selezione della data.
+     * @return
+     */
     private JDatePickerImpl createDatePicker() {
         UtilDateModel model = new UtilDateModel();
         LocalDate now = LocalDate.now();
@@ -113,15 +136,24 @@ public final class ReservationDialog extends JDialog {
         JDatePanelImpl datePanel = new JDatePanelImpl(model, p);
         return new JDatePickerImpl(datePanel, null);
     }
-
+    /**
+     * Metodo che aggiunge un ActionListener al pulsante di submit.
+     * @param listener
+     */
     public void addActionListener(ActionListener listener) {
         submitButton.addActionListener(listener);
     }
-
+    /**
+     * Metodo che restituisce il comando del pulsante di submit.
+     * @return
+     */
     public String getSubmitButtonCommand() {
         return submitButton.getActionCommand();
     }
-
+    /**
+     * Metodo che restituisce la prenotazione selezionata.
+     * @return
+     */
     public Reservation getSelectedReservation() {
         LocalDate date;
         if(isEditable){
@@ -146,7 +178,10 @@ public final class ReservationDialog extends JDialog {
         return new Reservation(date, startHour, endHour, nameField.getText(), descriptionField.getText());
         
     }
-
+    /**
+     * Metodo che restituisce il numero dell'aula selezionata.
+     * @return
+     */
     public int getSelectedClassNumber() {
         return ((Classroom) classroomsComboBox.getSelectedItem()).getNumber();
     }

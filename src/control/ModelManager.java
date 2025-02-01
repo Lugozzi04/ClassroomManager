@@ -11,7 +11,9 @@ import model.services.Cache;
 import model.services.CacheLoader;
 import model.services.Writer;
 import model.struct.ManagerClassReservations;
-
+/**
+ * Classe che gestisce la logica di business dell'applicazione e la comunicazione con il livello di persistenza.
+ */
 public class ModelManager {
     
     private final ManagerClassReservations<LocalDate,Classroom> manager;
@@ -24,7 +26,10 @@ public class ModelManager {
 
     private static final String FORMAT = "%d{%s";
     
-
+    /**
+     * Costruttore della classe ModelManager che inizializza il manager delle prenotazioni e carica la lista delle aule.
+     * @param fileName
+     */
     public ModelManager(String fileName) {
         this.classrooms = getListClassroom();
         this.manager = new ManagerClassReservations<>(classrooms);
@@ -32,7 +37,11 @@ public class ModelManager {
         cacheReservation=loader.loadCache();
         writerReservation = new Writer(fileName);
     }
-
+    /**
+     * Metodo che restituisce una matrice contentente il numero di ogni classe in data posizione.
+     * @param rows
+     * @return
+     */
     public int[][] getClassNumberMatrix(int rows) {
         int[][] matrix = new int[rows][classrooms.size()+1];
         for (int i = 0; i < rows; i++) {
@@ -45,18 +54,34 @@ public class ModelManager {
         }
         return matrix;
     }
-
+    /**
+     * Metodo che aggiunge una prenotazione alla lista delle prenotazioni e al file di cache.
+     * @param r
+     * @param classroomNumber
+     * @return
+     */
     public boolean addReservation(Reservation r, int classroomNumber) {
         return manager.addReservation(r.getDate(), classroomNumber, r)&&
                 cacheReservation.addLine(String.format(FORMAT, classroomNumber, r.toString()));
     }
-
+    /**
+     * Metodo che rimuove una prenotazione dalla lista delle prenotazioni e dal file di cache.
+     * @param r
+     * @param classroomNumber
+     * @return
+     */
     public boolean removeReservation(Reservation r, int classroomNumber) { 
         String formattedReservation = String.format(FORMAT, classroomNumber, r.toString());
         int index = cacheReservation.getLineIndex(formattedReservation);
         return manager.removeReservation(r.getDate(), classroomNumber, r) && cacheReservation.removeLine(index);
     }
-
+    /**
+     * Metodo che aggiorna una prenotazione nella lista delle prenotazioni e nel file di cache.
+     * @param oldR
+     * @param newR
+     * @param classroomNumber
+     * @return
+     */
     public boolean updateReservation(Reservation oldR, Reservation newR, int classroomNumber) {
         String formattedOld = String.format(FORMAT, classroomNumber, oldR.toString());
         String formattedNew = String.format(FORMAT, classroomNumber, newR.toString());
@@ -66,15 +91,26 @@ public class ModelManager {
                cacheReservation.removeLine(index) &&
                cacheReservation.addLine(formattedNew);
     }
-
+    /**
+     * Metodo che restituisce la lista delle prenotazioni di una determinata aula.
+     * @param classroomNumber
+     * @return
+     */
     public boolean finalSave(){
         return writerReservation.overWriteFile(cacheReservation.getCache());
     }
-
+    /**
+     * Metodo che salva le prenotazioni in un file temporaneo.
+     * @return
+     */
     public boolean saveTMP(){
         return writerTMP.overWriteFile();
     }
-
+    /**
+     * Metodo che salva le prenotazioni in un file temporaneo.
+     * @param intervalSeconds
+     * @return
+     */
     public boolean autoSave(int intervalSeconds){
         try{
         if (autoSaveThread != null) {
@@ -88,15 +124,26 @@ public class ModelManager {
         }
         return true;
     }
-
+    /**
+     * Metodo che restituisce la lista delle prenotazioni di una determinata aula.
+     * @param classroomNumber
+     * @return
+     */
     public Reservation getReservation(LocalDate date, int classroomNumber, int hour) {
         return manager.getReservation(date, classroomNumber, hour);
     }
-
+    /**
+     * Metodo che restituisce la lista delle prenotazioni di una determinata aula.
+     * @param classroomNumber
+     * @return
+     */
     public Classroom getClassroom(int classNumber) {
         return manager.getClassroom(classNumber);
     }
-
+    /**
+     * funzione di inizializzazione delle aule
+     * @return
+     */
     private List<Classroom> getListClassroom(){
         List<Classroom> classes = new ArrayList<>();
         CacheLoader loader = new CacheLoader("Classrooms.txt");
@@ -108,7 +155,10 @@ public class ModelManager {
         }
         return classes;
     }
-
+    /**
+     * funzione di inizializzazione delle prenotazioni
+     * @return
+     */
     public boolean initReservation(){
         try {
             
@@ -127,7 +177,10 @@ public class ModelManager {
         return true;
         
     }
-
+    /**
+     * Metodo che restituisce la lista delle aule.
+     * @return classrooms
+     */
     public List<Classroom> getClassrooms() {
         return classrooms;
     }

@@ -1,20 +1,30 @@
 package view;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionListener;
+
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+
 import model.entities.Classroom;
 import model.entities.Reservation;
-
+/**
+ * Classe che implementa una finestra di dialogo per visualizzare i dettagli di una aula o di una prenotazione.
+ */
 public class ShowDialog extends JDialog {
 
     private JButton editButton;
     private JButton removeButton;
 
     private static final Dimension WINDOW_SIZE = new Dimension(400, 300);
-
+    /**
+     * Costruttore della classe ShowDialog.
+     * @param classroom
+     */
     public ShowDialog(Classroom classroom) {
         super();
         setTitle("Classroom Details");
@@ -27,7 +37,10 @@ public class ShowDialog extends JDialog {
         setLocationRelativeTo(null);
         setVisible(true);
     }
-
+    /**
+     * Costruttore della classe ShowDialog.
+     * @param reservation
+     */
     public ShowDialog(Reservation reservation) {
         super();
         setTitle("Reservation Details");
@@ -40,7 +53,11 @@ public class ShowDialog extends JDialog {
         setLocationRelativeTo(null);
         setVisible(true);
     }
-
+    /**
+     * Metodo che inizializza il pannello per visualizzare i dettagli di una aula.
+     * @param classroom
+     * @return
+     */
     private JPanel initClassroomPanel(Classroom classroom) {
         JPanel panel = new JPanel(new GridLayout(0, 1));
         panel.add(new JLabel("Disponibile per la prenotazione"));
@@ -51,7 +68,11 @@ public class ShowDialog extends JDialog {
         panel.add(new JLabel("Info: " + classroom.getInfo()));
         return panel;
     }
-
+    /**
+     * Metodo che inizializza il pannello per visualizzare i dettagli di una prenotazione.
+     * @param reservation
+     * @return
+     */
     private JPanel initReservationPanel(Reservation reservation) {
         JPanel panel = new JPanel(new GridLayout(0, 1));
         panel.add(new JLabel("Reservation Details"));
@@ -72,16 +93,25 @@ public class ShowDialog extends JDialog {
 
         return panel;
     }
-
+    /**
+     * Metodo che restituisce il comando del bottone per modificare una prenotazione.
+     * @return
+     */
     public String getEditButtonCommand() {
         return editButton.getActionCommand();
     }
-
+    /**
+     * Metodo che restituisce il comando del bottone per rimuovere una prenotazione.
+     * @return
+     */
     public String getRemoveButtonCommand() {
         return removeButton.getActionCommand();
     }
 
-
+    /**
+     * Metodo che aggiunge un ascoltatore per i bottoni di modifica e rimozione di una prenotazione.
+     * @param listener
+     */
     public void addShowListeners(ActionListener listener) {
         if (editButton != null && removeButton != null) {
             editButton.addActionListener(listener);
