@@ -61,11 +61,12 @@ public class ShowDialog extends JDialog {
     private JPanel initClassroomPanel(Classroom classroom) {
         JPanel panel = new JPanel(new GridLayout(0, 1));
         panel.add(new JLabel("Disponibile per la prenotazione"));
-        panel.add(new JLabel("Classroom Details"));
+        panel.add(new JLabel("Dettagli sulla classe:"));
         panel.add(new JLabel("Numero: " + classroom.getNumber()));
         panel.add(new JLabel("Tipo: " + classroom.getType()));
         panel.add(new JLabel("Capacità: " + classroom.getCapacity()));
         panel.add(new JLabel("Info: " + classroom.getInfo()));
+        panel.add(new JLabel(classroom.ruleForBooking()));
         return panel;
     }
     /**
@@ -75,7 +76,7 @@ public class ShowDialog extends JDialog {
      */
     private JPanel initReservationPanel(Reservation reservation) {
         JPanel panel = new JPanel(new GridLayout(0, 1));
-        panel.add(new JLabel("Reservation Details"));
+        panel.add(new JLabel("dettagli sulla prenotazione:"));
         panel.add(new JLabel("Data: " + reservation.getDate()));
         panel.add(new JLabel("Ora Inizio: " + reservation.getStartHour()));
         panel.add(new JLabel("Ora Fine: " + reservation.getEndHour()));

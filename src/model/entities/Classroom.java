@@ -38,6 +38,7 @@ public abstract class Classroom {
      * @return true se l'aula è prenotabile, false altrimenti.
      */
     public abstract boolean isBookable(int hours);
+    public abstract String ruleForBooking();
 
     /**
      * Restituisce il tipo di aula.

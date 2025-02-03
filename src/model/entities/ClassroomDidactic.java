@@ -17,4 +17,9 @@ public class ClassroomDidactic extends Classroom {
     public boolean isBookable(int durata) {
         return durata >= 1 && durata <= 8;
     }
+
+    @Override
+    public String ruleForBooking() {
+        return "prenotazioni comprese tra 1 e 8 ore";
+    }
 }

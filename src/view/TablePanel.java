@@ -59,15 +59,15 @@ public class TablePanel extends JPanel implements ActionListener {
         datePickerProperties.put("text.today", "Today");
         datePickerProperties.put("text.month", "Month");
         datePickerProperties.put("text.year", "Year");
-
+        
         JDatePanelImpl datePanel = new JDatePanelImpl(model, datePickerProperties);
-        datePicker = new JDatePickerImpl(datePanel, null);
+        datePicker = new JDatePickerImpl(datePanel, new DateComponentFormatter());
         
         JButton datePickerButton = (JButton) datePicker.getComponent(1);
         datePickerButton.setText("Scegli Data");
         datePickerButton.revalidate();
         datePickerButton.repaint();
-        
+
         datePicker.addActionListener(this);
         add(datePicker, BorderLayout.NORTH);
     }

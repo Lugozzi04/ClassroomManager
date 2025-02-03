@@ -24,6 +24,9 @@ public class ModelManager {
 
     private Writer writerTMP;
 
+    private static final String FILE_NAME_CLASSROOMS = "Classrooms.txt";
+    private static final String FILE_NAME_TMP="RESERVATIONS_TMP.txt";
+    private static final String SPLIT_CARACTER="\\{";
     private static final String FORMAT = "%d{%s";
     
     /**
@@ -116,7 +119,7 @@ public class ModelManager {
         if (autoSaveThread != null) {
             autoSaveThread.stopAutoSave(); // Ferma il vecchio thread
         }
-        writerTMP=new Writer("RESERVATIONS_TMP.txt", cacheReservation);
+        writerTMP=new Writer(FILE_NAME_TMP, cacheReservation);
         autoSaveThread = new AutoSave(writerTMP, intervalSeconds);
         autoSaveThread.start();
         }catch(Exception e){
@@ -146,7 +149,7 @@ public class ModelManager {
      */
     private List<Classroom> getListClassroom(){
         List<Classroom> classes = new ArrayList<>();
-        CacheLoader loader = new CacheLoader("Classrooms.txt");
+        CacheLoader loader = new CacheLoader(FILE_NAME_CLASSROOMS);
         Cache cacheClass = loader.loadCache();
 
         for (int i = 0; i < cacheClass.getSize(); i++) {
@@ -164,7 +167,7 @@ public class ModelManager {
             
             for (int i = 0; i < cacheReservation.getSize(); i++) {
                 String line = cacheReservation.getLine(i);      
-                String[] parts = line.split("\\{");
+                String[] parts = line.split(SPLIT_CARACTER);
                 Reservation r = Reservation.stringToReservation(parts[1]);
                 if(r==null){
                     return false;

@@ -24,7 +24,7 @@ public class ManagerClassReservations <D,C extends Classroom> {
      * Costruttore della classe.
      * @param classrooms Lista delle aule
      */
-    public ManagerClassReservations(List<C> classrooms) {
+    public ManagerClassReservations(List<? extends C> classrooms) {
         this.reservations = new HashMap<>();
         this.classrooms = initClassrooms(classrooms);
     }
@@ -34,7 +34,7 @@ public class ManagerClassReservations <D,C extends Classroom> {
      * @param classrooms Lista delle aule
      * @return Mappa delle aule
      */
-    private Map<Integer, C> initClassrooms(List<C> classrooms) {
+    private Map<Integer, C> initClassrooms(List<? extends C> classrooms) {
         Map<Integer, C> map = new HashMap<>();
         for (C c : classrooms) {
             map.put(c.getNumber(), c);

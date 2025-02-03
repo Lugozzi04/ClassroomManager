@@ -134,7 +134,7 @@ public final class ReservationDialog extends JDialog {
         p.put("text.year", "Year");
 
         JDatePanelImpl datePanel = new JDatePanelImpl(model, p);
-        return new JDatePickerImpl(datePanel, null);
+        return new JDatePickerImpl(datePanel, new DateComponentFormatter());
     }
     /**
      * Metodo che aggiunge un ActionListener al pulsante di submit.

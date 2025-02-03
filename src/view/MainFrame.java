@@ -18,6 +18,7 @@ public class MainFrame extends JFrame implements WindowListener{
     private final TablePanel tablePanel;
     private final MenuPanel menuPanel;
 
+    //serve per chiudere la finestra
     private ActionListener closeListener;
 
     public MainFrame(TablePanel tp) {

@@ -17,5 +17,10 @@ public class ClassroomLab extends Classroom {
     public boolean isBookable(int hours) {
         return hours == 2 || hours == 4;
     }
+
+    @Override
+    public String ruleForBooking() {
+        return "prenotabile per 2 o 4 ore";
+    }
     
 }
