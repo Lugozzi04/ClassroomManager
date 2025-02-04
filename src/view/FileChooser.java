@@ -9,7 +9,7 @@ import javax.swing.JOptionPane;
  * Classe che permette di selezionare un file da aprire
  * @param fileName nome del file di default
  */
-public class FileChooser extends JOptionPane{
+public class FileChooser {
 
     private String fileName;
     /**
@@ -17,14 +17,12 @@ public class FileChooser extends JOptionPane{
      * @param Default
      */
     public FileChooser(String Default) {
-        super();
         fileName = Default;
     }
     /**
      * Costruttore della classe
      */
     public FileChooser() {
-        super();
         fileName = "";
     }
     /**
@@ -35,7 +33,7 @@ public class FileChooser extends JOptionPane{
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Seleziona il file di prenotazioni esistente");
 
-        int userSelection = fileChooser.showOpenDialog(null);
+        int userSelection = fileChooser.showOpenDialog(null); //modalità modale per la finestra di dialogo, cioè blocca l'interfaccia finché non viene chiusa o scelta un opzione
 
         if (userSelection == JFileChooser.APPROVE_OPTION) {
             File fileToOpen = fileChooser.getSelectedFile();

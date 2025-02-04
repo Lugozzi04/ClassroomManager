@@ -99,14 +99,14 @@ public class ShowDialog extends JDialog {
      * @return
      */
     public String getEditButtonCommand() {
-        return editButton.getActionCommand();
+        return editButton!=null ? editButton.getActionCommand() :""; // Se il bottone non è stato inizializzato, restituisce una stringa vuota
     }
     /**
      * Metodo che restituisce il comando del bottone per rimuovere una prenotazione.
      * @return
      */
     public String getRemoveButtonCommand() {
-        return removeButton.getActionCommand();
+        return removeButton!=null ? removeButton.getActionCommand() :""; //stesso discorso di sopra
     }
 
     /**

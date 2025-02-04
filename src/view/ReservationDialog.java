@@ -53,7 +53,7 @@ public final class ReservationDialog extends JDialog {
      * @param endHour
      * @param date
      */
-    public ReservationDialog(Classroom classroom, int startHour, int endHour,LocalDate date) {
+    public ReservationDialog(Classroom classroom, int startHour, int endHour,LocalDate date, String name, String reason) {
         super();
         this.classroomsComboBox = new JComboBox<>(new Classroom[]{classroom});
         this.startHourComboBox = createHourComboBox();//new JComboBox<>(new String[]{formatHour(startHour)});
@@ -68,9 +68,11 @@ public final class ReservationDialog extends JDialog {
         this.nameField = new JTextField();
         this.descriptionField = new JTextField();
         this.isEditable = false;
-
+        
         startHourComboBox.setSelectedItem(formatHour(startHour));
         endHourComboBox.setSelectedItem(formatHour(endHour));
+        nameField.setText(name);
+        descriptionField.setText(reason);
         
         initComponents();
     }
