@@ -2,7 +2,6 @@ package view;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.time.LocalDate;
-import java.util.List;
 
 import javax.swing.JTable;
 
@@ -21,7 +20,6 @@ public class TableMouseListener extends MouseAdapter implements ActionListener {
 
     private JTable table;
     private ModelManager modelManager;
-    private List<Classroom> classrooms;
     private UtilDateModel model;
     private ReservationDialog dialog;
     private TablePanel tablePanel;
@@ -41,7 +39,6 @@ public class TableMouseListener extends MouseAdapter implements ActionListener {
     public TableMouseListener(TablePanel tablePanel, JTable table, ModelManager modelManager, UtilDateModel model) {
         this.table = table;
         this.modelManager = modelManager;
-        this.classrooms = modelManager.getClassrooms();
         this.model = model;
         this.tablePanel = tablePanel;
         this.classNumber = modelManager.getClassNumberMatrix(NUMBER_OR_ROWS);
@@ -159,7 +156,10 @@ public class TableMouseListener extends MouseAdapter implements ActionListener {
             return;
         }
 
-        modelManager.updateReservation(oldReservation, newReservation, classNumber[row][col]);
+        if(!modelManager.updateReservation(oldReservation, newReservation, classNumber[row][col])){
+            JOptionPane.showMessageDialog(null, "L'aula è già occupata per le ore scelte", "Errore", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         tablePanel.updateTable();
     }
     /**

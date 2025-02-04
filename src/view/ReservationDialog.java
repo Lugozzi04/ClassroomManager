@@ -19,12 +19,12 @@ public final class ReservationDialog extends JDialog {
     private final JComboBox<Classroom> classroomsComboBox;
     private final JComboBox<String> startHourComboBox;
     private final JComboBox<String> endHourComboBox;
-    private JDatePickerImpl datePicker;
     private final JTextField nameField;
     private final JTextField descriptionField;
     private final JButton submitButton;
 
     private  UtilDateModel model;
+    private JDatePickerImpl datePicker;
 
     private final boolean isEditable;
     /**
@@ -56,8 +56,8 @@ public final class ReservationDialog extends JDialog {
     public ReservationDialog(Classroom classroom, int startHour, int endHour,LocalDate date) {
         super();
         this.classroomsComboBox = new JComboBox<>(new Classroom[]{classroom});
-        this.startHourComboBox = new JComboBox<>(new String[]{formatHour(startHour)});
-        this.endHourComboBox = new JComboBox<>(new String[]{formatHour(endHour)});
+        this.startHourComboBox = createHourComboBox();//new JComboBox<>(new String[]{formatHour(startHour)});
+        this.endHourComboBox = createHourComboBox();//new JComboBox<>(new String[]{formatHour(endHour)});
 
         this.submitButton = new JButton("Modifica Prenotazione");
         this.datePicker = createDatePicker();
@@ -68,6 +68,10 @@ public final class ReservationDialog extends JDialog {
         this.nameField = new JTextField();
         this.descriptionField = new JTextField();
         this.isEditable = false;
+
+        startHourComboBox.setSelectedItem(formatHour(startHour));
+        endHourComboBox.setSelectedItem(formatHour(endHour));
+        
         initComponents();
     }
     /**
@@ -77,8 +81,8 @@ public final class ReservationDialog extends JDialog {
         setLayout(new GridLayout(7, 2));
 
         classroomsComboBox.setEnabled(isEditable);
-        startHourComboBox.setEnabled(isEditable);
-        endHourComboBox.setEnabled(isEditable);
+        //startHourComboBox.setEnabled(isEditable);
+        //endHourComboBox.setEnabled(isEditable);
         datePicker.setEnabled(isEditable);
 
         add(new JLabel("Aula:"));
